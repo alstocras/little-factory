@@ -77,6 +77,7 @@ async fn main() {
     let cellSize: f32 = 50.0;
 
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(6, 6), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(0, 0), TileOccupant::Input);
     levelMap.insert(IVec2::new(9, 9), TileOccupant::Output);
     loop {
