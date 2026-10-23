@@ -68,8 +68,13 @@ async fn main() {
     let mut levelMap: HashMap<IVec2, TileOccupant> = HashMap::new();
     let mut playerPos: IVec2 = IVec2::new(1, 1);
 
+    let mut numBasicResource: u32 = 0;
+
     let rows: u32 = 10;
     let cols: u32 = 10;
+    let startX: f32 = 100.0;
+    let startY: f32 = 100.0;
+    let cellSize: f32 = 50.0;
 
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(0, 0), TileOccupant::Input);
@@ -107,8 +112,30 @@ async fn main() {
             }
         }
 
+        // click to take resource
+        if is_mouse_button_pressed(MouseButton::Left) {
+            let (mouseX, mouseY) = mouse_position();
+
+            let mouseCellX: i32 = ((mouseX - startX) / cellSize).floor() as i32;
+            let mouseCellY: i32 = ((mouseY - startY) / cellSize).floor() as i32;
+
+            let mouseCellPos = IVec2::new(mouseCellX, mouseCellY);
+
+            match levelMap.get(&mouseCellPos) {
+                None => println!("nothing here"),
+                Some(TileOccupant::BasicResource) => {
+                    numBasicResource += 1;
+                    levelMap.remove(&mouseCellPos);
+                    println!("{}", numBasicResource);
+                }
+                Some(TileOccupant::Input) => {}
+                Some(TileOccupant::Output) => {}
+                Some(TileOccupant::Player) => {}
+            }
+        }
+
         levelMap.insert(playerPos, TileOccupant::Player);
-        drawGrid(50.0, GRAY, 100.0, 100.0, rows, cols, &levelMap);
+        drawGrid(cellSize, GRAY, startX, startY, rows, cols, &levelMap);
 
         next_frame().await;
     }
