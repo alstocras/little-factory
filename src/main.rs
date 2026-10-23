@@ -77,8 +77,42 @@ fn drawGrid(
                         }
                         TileOccupant::Player => {}
                         TileOccupant::BasicResource => {}
-                        TileOccupant::Input => {}
-                        TileOccupant::Output => {}
+                        TileOccupant::Input => {
+                            draw_line(
+                                pos.x as f32 * cellSize + startX + cellSize / 2.0,
+                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                position.x as f32 * cellSize + startX + cellSize / 2.0,
+                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                10.0,
+                                GOLD,
+                            );
+                            draw_line(
+                                position.x as f32 * cellSize + startX + cellSize / 2.0,
+                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                position.x as f32 * cellSize + startX + cellSize / 2.0,
+                                position.y as f32 * cellSize + startY + cellSize / 2.0,
+                                10.0,
+                                GOLD,
+                            );
+                        }
+                        TileOccupant::Output => {
+                            draw_line(
+                                pos.x as f32 * cellSize + startX + cellSize / 2.0,
+                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                position.x as f32 * cellSize + startX + cellSize / 2.0,
+                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                10.0,
+                                GOLD,
+                            );
+                            draw_line(
+                                position.x as f32 * cellSize + startX + cellSize / 2.0,
+                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                position.x as f32 * cellSize + startX + cellSize / 2.0,
+                                position.y as f32 * cellSize + startY + cellSize / 2.0,
+                                10.0,
+                                GOLD,
+                            );
+                        }
                         TileOccupant::G2PFactory => {
                             draw_line(
                                 pos.x as f32 * cellSize + startX + cellSize / 2.0,
@@ -116,6 +150,7 @@ enum TileOccupant {
 #[macroquad::main("Little Factory")]
 async fn main() {
     let mut levelMap: HashMap<IVec2, TileOccupant> = HashMap::new();
+    let mut nodeResourcesMap: HashMap<IVec2, u64> = HashMap::new();
     let mut playerPos: IVec2 = IVec2::new(1, 1);
 
     let mut numBasicResource: u32 = 0;
@@ -205,6 +240,7 @@ async fn main() {
 
                 if !levelMap.contains_key(&mouseCellPos) && dist <= 3 {
                     levelMap.insert(mouseCellPos, TileOccupant::TransmitterNode);
+                    nodeResourcesMap.insert(mouseCellPos, 0);
                     numBasicResource -= 1;
                 } else {
                     println!("occupied/too far");
