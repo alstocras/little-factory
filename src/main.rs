@@ -5,8 +5,6 @@ use macroquad::ui::hash;
 use ndarray::*;
 use std::collections::*;
 
-use crate::TileOccupant::BasicResource;
-
 fn drawGrid(
     cellSize: f32,
     colour: Color,
