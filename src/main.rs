@@ -49,6 +49,24 @@ async fn main() {
     loop {
         clear_background(BLACK);
 
+        // handle player input
+        if is_key_pressed(KeyCode::Y) || is_key_pressed(KeyCode::W) {
+            levelMap.remove(&playerPos);
+            playerPos.y -= 1
+        }
+        if is_key_pressed(KeyCode::I) || is_key_pressed(KeyCode::S) {
+            levelMap.remove(&playerPos);
+            playerPos.y += 1
+        }
+        if is_key_pressed(KeyCode::E) || is_key_pressed(KeyCode::D) {
+            levelMap.remove(&playerPos);
+            playerPos.x += 1
+        }
+        if is_key_pressed(KeyCode::C) || is_key_pressed(KeyCode::A) {
+            levelMap.remove(&playerPos);
+            playerPos.x -= 1
+        }
+
         levelMap.insert(playerPos, TileOccupant::PLAYER);
         drawGrid(50.0, GRAY, 100.0, 100.0, 10.0, 10.0, &levelMap);
 
