@@ -16,23 +16,23 @@ fn drawGrid(
     let mut currentX: f32 = startX;
     let mut currentY: f32 = startY;
 
-    while currentX < rows as f32 * cellSize {
+    while currentX <= rows as f32 * cellSize + startX {
         draw_line(
             currentX,
             startY,
             currentX,
-            cols as f32 * cellSize,
+            cols as f32 * cellSize + startX,
             1.0,
             colour,
         );
         currentX += cellSize;
     }
 
-    while currentY < cols as f32 * cellSize {
+    while currentY <= cols as f32 * cellSize + startY {
         draw_line(
             startX,
             currentY,
-            rows as f32 * cellSize,
+            rows as f32 * cellSize + startY,
             currentY,
             1.0,
             colour,
@@ -70,24 +70,30 @@ async fn main() {
         if is_key_pressed(KeyCode::Y) || is_key_pressed(KeyCode::W) {
             levelMap.remove(&playerPos);
             if playerPos.y > 0 && playerPos.y - 1 < rows as i32 {
-                playerPos.y -= 1
+                playerPos.y -= 1;
             }
         }
         if is_key_pressed(KeyCode::I) || is_key_pressed(KeyCode::S) {
             levelMap.remove(&playerPos);
-            playerPos.y += 1
+            if playerPos.y + 1 >= 0 && playerPos.y + 1 < rows as i32 {
+                playerPos.y += 1;
+            }
         }
         if is_key_pressed(KeyCode::E) || is_key_pressed(KeyCode::D) {
             levelMap.remove(&playerPos);
-            playerPos.x += 1
+            if playerPos.x + 1 >= 0 && playerPos.x + 1 < cols as i32 {
+                playerPos.x += 1;
+            }
         }
         if is_key_pressed(KeyCode::C) || is_key_pressed(KeyCode::A) {
             levelMap.remove(&playerPos);
-            playerPos.x -= 1
+            if playerPos.x > 0 && playerPos.x - 1 < cols as i32 {
+                playerPos.x -= 1;
+            }
         }
 
         levelMap.insert(playerPos, TileOccupant::Player);
-        drawGrid(50.0, GRAY, 100.0, 100.0, cols, rows, &levelMap);
+        drawGrid(50.0, GRAY, 100.0, 100.0, rows, cols, &levelMap);
 
         next_frame().await;
     }
