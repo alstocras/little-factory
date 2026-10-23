@@ -74,25 +74,29 @@ async fn main() {
         // handle player input
         if is_key_pressed(KeyCode::Y) || is_key_pressed(KeyCode::W) {
             levelMap.remove(&playerPos);
-            if playerPos.y > 0 && playerPos.y - 1 < rows as i32 {
+            let targetPos = IVec2::new(playerPos.x, playerPos.y - 1);
+            if targetPos.y >= 0 && targetPos.y < rows as i32 && !levelMap.contains_key(&targetPos) {
                 playerPos.y -= 1;
             }
         }
         if is_key_pressed(KeyCode::I) || is_key_pressed(KeyCode::S) {
             levelMap.remove(&playerPos);
-            if playerPos.y + 1 >= 0 && playerPos.y + 1 < rows as i32 {
+            let targetPos = IVec2::new(playerPos.x, playerPos.y + 1);
+            if targetPos.y >= 0 && targetPos.y < rows as i32 && !levelMap.contains_key(&targetPos) {
                 playerPos.y += 1;
             }
         }
         if is_key_pressed(KeyCode::E) || is_key_pressed(KeyCode::D) {
             levelMap.remove(&playerPos);
-            if playerPos.x + 1 >= 0 && playerPos.x + 1 < cols as i32 {
+            let targetPos = IVec2::new(playerPos.x + 1, playerPos.y);
+            if targetPos.x >= 0 && targetPos.x < rows as i32 && !levelMap.contains_key(&targetPos) {
                 playerPos.x += 1;
             }
         }
         if is_key_pressed(KeyCode::C) || is_key_pressed(KeyCode::A) {
             levelMap.remove(&playerPos);
-            if playerPos.x > 0 && playerPos.x - 1 < cols as i32 {
+            let targetPos = IVec2::new(playerPos.x - 1, playerPos.y);
+            if targetPos.x >= 0 && targetPos.x < rows as i32 && !levelMap.contains_key(&targetPos) {
                 playerPos.x -= 1;
             }
         }
