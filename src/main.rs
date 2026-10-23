@@ -1,3 +1,1 @@
-fn main() {
-    println!("Hello, world!");
-}
+#![allow(non_snake_case)]
