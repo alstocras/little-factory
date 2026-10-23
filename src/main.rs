@@ -3,6 +3,8 @@ use macroquad::prelude::*;
 use ndarray::*;
 use std::collections::*;
 
+use crate::TileOccupant::BasicResource;
+
 fn drawGrid(
     cellSize: f32,
     colour: Color,
@@ -47,12 +49,14 @@ fn drawGrid(
 
         match occupant {
             TileOccupant::Player => draw_rectangle(pixelX, pixelY, cellSize, cellSize, RED),
+            TileOccupant::BasicResource => draw_rectangle(pixelX, pixelY, cellSize, cellSize, BLUE),
         };
     }
 }
 
 enum TileOccupant {
     Player,
+    BasicResource,
 }
 
 #[macroquad::main("Little Factory")]
@@ -63,6 +67,7 @@ async fn main() {
     let rows: u32 = 10;
     let cols: u32 = 10;
 
+    levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
     loop {
         clear_background(BLACK);
 
