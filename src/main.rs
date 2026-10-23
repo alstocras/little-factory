@@ -59,26 +59,46 @@ fn drawGrid(
                 draw_rectangle(pixelX, pixelY, cellSize, cellSize, GOLD);
                 for (position, occupant) in levelMap.iter() {
                     match occupant {
-                        TileOccupant::TransmitterNode => draw_line(
-                            pos.x as f32 * cellSize + startX + cellSize / 2.0,
-                            pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                            position.x as f32 * cellSize + startX + cellSize / 2.0,
-                            position.y as f32 * cellSize + startY + cellSize / 2.0,
-                            10.0,
-                            GOLD,
-                        ),
+                        TileOccupant::TransmitterNode => {
+                            draw_line(
+                                pos.x as f32 * cellSize + startX + cellSize / 2.0,
+                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                position.x as f32 * cellSize + startX + cellSize / 2.0,
+                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                10.0,
+                                GOLD,
+                            );
+                            draw_line(
+                                position.x as f32 * cellSize + startX + cellSize / 2.0,
+                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                position.x as f32 * cellSize + startX + cellSize / 2.0,
+                                position.y as f32 * cellSize + startY + cellSize / 2.0,
+                                10.0,
+                                GOLD,
+                            );
+                        }
                         TileOccupant::Player => {}
                         TileOccupant::BasicResource => {}
                         TileOccupant::Input => {}
                         TileOccupant::Output => {}
-                        TileOccupant::G2PFactory => draw_line(
-                            pos.x as f32 * cellSize + startX + cellSize / 2.0,
-                            pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                            position.x as f32 * cellSize + startX + cellSize / 2.0,
-                            position.y as f32 * cellSize + startY + cellSize / 2.0,
-                            10.0,
-                            GOLD,
-                        ),
+                        TileOccupant::G2PFactory => {
+                            draw_line(
+                                pos.x as f32 * cellSize + startX + cellSize / 2.0,
+                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                position.x as f32 * cellSize + startX + cellSize / 2.0,
+                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                10.0,
+                                GOLD,
+                            );
+                            draw_line(
+                                position.x as f32 * cellSize + startX + cellSize / 2.0,
+                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                position.x as f32 * cellSize + startX + cellSize / 2.0,
+                                position.y as f32 * cellSize + startY + cellSize / 2.0,
+                                10.0,
+                                GOLD,
+                            );
+                        }
                     }
                 }
             }
