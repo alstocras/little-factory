@@ -52,6 +52,7 @@ fn drawGrid(
             TileOccupant::BasicResource => draw_rectangle(pixelX, pixelY, cellSize, cellSize, BLUE),
             TileOccupant::Input => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GREEN),
             TileOccupant::Output => draw_rectangle(pixelX, pixelY, cellSize, cellSize, PURPLE),
+            TileOccupant::G2PFactory => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GRAY),
         };
     }
 }
@@ -61,6 +62,7 @@ enum TileOccupant {
     BasicResource,
     Input,
     Output,
+    G2PFactory,
 }
 
 #[macroquad::main("Little Factory")]
@@ -76,10 +78,12 @@ async fn main() {
     let startY: f32 = 100.0;
     let cellSize: f32 = 50.0;
 
+    // building the map
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(6, 6), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(0, 0), TileOccupant::Input);
     levelMap.insert(IVec2::new(9, 9), TileOccupant::Output);
+
     loop {
         clear_background(BLACK);
 
@@ -113,8 +117,20 @@ async fn main() {
             }
         }
 
-        // click to take resource
+        // click to place (only G2PFactory for now)
         if is_mouse_button_pressed(MouseButton::Left) {
+            let (mouseX, mouseY) = mouse_position();
+
+            let mouseCellX: i32 = ((mouseX - startX) / cellSize).floor() as i32;
+            let mouseCellY: i32 = ((mouseY - startY) / cellSize).floor() as i32;
+
+            let mouseCellPos = IVec2::new(mouseCellX, mouseCellY);
+
+            levelMap.insert(mouseCellPos, TileOccupant::G2PFactory);
+        }
+
+        // right click to take resource / remove building
+        if is_mouse_button_pressed(MouseButton::Right) {
             let (mouseX, mouseY) = mouse_position();
 
             let mouseCellX: i32 = ((mouseX - startX) / cellSize).floor() as i32;
@@ -132,6 +148,10 @@ async fn main() {
                 Some(TileOccupant::Input) => {}
                 Some(TileOccupant::Output) => {}
                 Some(TileOccupant::Player) => {}
+                Some(TileOccupant::G2PFactory) => {
+                    println!("converts green to purple");
+                    levelMap.remove(&mouseCellPos);
+                }
             }
         }
 
