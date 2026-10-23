@@ -2,7 +2,6 @@
 use macroquad::prelude::*;
 use macroquad::ui;
 use macroquad::ui::hash;
-use ndarray::*;
 use std::collections::*;
 
 fn drawGrid(
@@ -252,18 +251,13 @@ async fn main() {
                 println!("not enough");
             }
         }
-        for (pos, occupant) in levelMap.iter() {
-            if let TileOccupant::TransmitterNode = occupant {
-                let mut firstPut: Vec<(&IVec2, &mut u64)> = Vec::new();
-                for (nodePos, basicResources) in nodeResourcesMap.iter_mut() {
-                    if firstPut.is_empty() {
-                        firstPut.push((nodePos, basicResources));
-                    } else {
-                        if firstPut[0].1 > basicResources {
-                            println!("transferring");
-                        }
-                    }
-                }
+
+        // read transmitter positions
+        let mut transmitterPositions: Vec<IVec2> = Vec::new();
+        for (buildingPosition, buildingType) in levelMap.iter() {
+            if let TileOccupant::TransmitterNode = buildingType {
+                transmitterPositions.push(*buildingPosition);
+                println!("found transmitter");
             }
         }
 
