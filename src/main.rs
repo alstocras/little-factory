@@ -55,6 +55,9 @@ fn drawGrid(
             TileOccupant::Input => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GREEN),
             TileOccupant::Output => draw_rectangle(pixelX, pixelY, cellSize, cellSize, PURPLE),
             TileOccupant::G2PFactory => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GRAY),
+            TileOccupant::TransmitterNode => {
+                draw_rectangle(pixelX, pixelY, cellSize, cellSize, GOLD)
+            }
         };
     }
 }
@@ -65,6 +68,7 @@ enum TileOccupant {
     Input,
     Output,
     G2PFactory,
+    TransmitterNode,
 }
 
 #[macroquad::main("Little Factory")]
@@ -83,6 +87,7 @@ async fn main() {
     // building the map
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(6, 6), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(7, 7), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(0, 0), TileOccupant::Input);
     levelMap.insert(IVec2::new(9, 9), TileOccupant::Output);
 
@@ -143,6 +148,30 @@ async fn main() {
             }
         }
 
+        // middle click for transmitter
+        if is_mouse_button_pressed(MouseButton::Middle) {
+            if numBasicResource >= 1 {
+                let (mouseX, mouseY) = mouse_position();
+
+                let mouseCellX: i32 = ((mouseX - startX) / cellSize).floor() as i32;
+                let mouseCellY: i32 = ((mouseY - startY) / cellSize).floor() as i32;
+
+                let mouseCellPos = IVec2::new(mouseCellX, mouseCellY);
+
+                let dist =
+                    (playerPos.x - mouseCellPos.x).abs() + (playerPos.y - mouseCellPos.y).abs();
+
+                if !levelMap.contains_key(&mouseCellPos) && dist <= 3 {
+                    levelMap.insert(mouseCellPos, TileOccupant::TransmitterNode);
+                    numBasicResource -= 1;
+                } else {
+                    println!("occupied/too far");
+                }
+            } else {
+                println!("not enough");
+            }
+        }
+
         // right click to take resource / remove building
         if is_mouse_button_pressed(MouseButton::Right) {
             let (mouseX, mouseY) = mouse_position();
@@ -173,6 +202,11 @@ async fn main() {
                     levelMap.remove(&mouseCellPos);
                     numBasicResource += 2;
                 }
+                Some(TileOccupant::TransmitterNode) => {
+                    println!("transmits resources orthogonally");
+                    levelMap.remove(&mouseCellPos);
+                    numBasicResource += 1;
+                }
             }
         }
 
@@ -196,7 +230,7 @@ async fn main() {
             vec2(100.0, screen_height()),
         )
         .label("infobox")
-        .ui(&mut *ui::root_ui(), |ui| {
+        .ui(&mut ui::root_ui(), |ui| {
             ui.label(vec2(20.0, 20.0), "hello");
         });
 
