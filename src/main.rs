@@ -50,6 +50,8 @@ fn drawGrid(
         match occupant {
             TileOccupant::Player => draw_rectangle(pixelX, pixelY, cellSize, cellSize, RED),
             TileOccupant::BasicResource => draw_rectangle(pixelX, pixelY, cellSize, cellSize, BLUE),
+            TileOccupant::Input => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GREEN),
+            TileOccupant::Output => draw_rectangle(pixelX, pixelY, cellSize, cellSize, PURPLE),
         };
     }
 }
@@ -57,17 +59,21 @@ fn drawGrid(
 enum TileOccupant {
     Player,
     BasicResource,
+    Input,
+    Output,
 }
 
 #[macroquad::main("Little Factory")]
 async fn main() {
     let mut levelMap: HashMap<IVec2, TileOccupant> = HashMap::new();
-    let mut playerPos: IVec2 = IVec2::new(0, 0);
+    let mut playerPos: IVec2 = IVec2::new(1, 1);
 
     let rows: u32 = 10;
     let cols: u32 = 10;
 
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(0, 0), TileOccupant::Input);
+    levelMap.insert(IVec2::new(9, 9), TileOccupant::Output);
     loop {
         clear_background(BLACK);
 
