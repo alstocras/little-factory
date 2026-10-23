@@ -1,5 +1,7 @@
 #![allow(non_snake_case)]
 use macroquad::prelude::*;
+use macroquad::ui;
+use macroquad::ui::hash;
 use ndarray::*;
 use std::collections::*;
 
@@ -185,8 +187,18 @@ async fn main() {
             screen_width() - basicResDimen.width - 75.0,
             basicResDimen.height + 50.0,
             30.0,
-            BLUE,
+            WHITE,
         );
+
+        ui::widgets::Window::new(
+            ui::hash!(),
+            vec2(screen_width() - 75.0, 75.0),
+            vec2(100.0, screen_height()),
+        )
+        .label("infobox")
+        .ui(&mut *ui::root_ui(), |ui| {
+            ui.label(vec2(20.0, 20.0), "hello");
+        });
 
         next_frame().await;
     }
