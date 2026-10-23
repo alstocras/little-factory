@@ -119,14 +119,26 @@ async fn main() {
 
         // click to place (only G2PFactory for now)
         if is_mouse_button_pressed(MouseButton::Left) {
-            let (mouseX, mouseY) = mouse_position();
+            if numBasicResource >= 2 {
+                let (mouseX, mouseY) = mouse_position();
 
-            let mouseCellX: i32 = ((mouseX - startX) / cellSize).floor() as i32;
-            let mouseCellY: i32 = ((mouseY - startY) / cellSize).floor() as i32;
+                let mouseCellX: i32 = ((mouseX - startX) / cellSize).floor() as i32;
+                let mouseCellY: i32 = ((mouseY - startY) / cellSize).floor() as i32;
 
-            let mouseCellPos = IVec2::new(mouseCellX, mouseCellY);
+                let mouseCellPos = IVec2::new(mouseCellX, mouseCellY);
 
-            levelMap.insert(mouseCellPos, TileOccupant::G2PFactory);
+                let dist =
+                    (playerPos.x - mouseCellPos.x).abs() + (playerPos.y - mouseCellPos.y).abs();
+
+                if !levelMap.contains_key(&mouseCellPos) && dist <= 3 {
+                    levelMap.insert(mouseCellPos, TileOccupant::G2PFactory);
+                    numBasicResource -= 2;
+                } else {
+                    println!("occupied/too far");
+                }
+            } else {
+                println!("not enough resources");
+            }
         }
 
         // right click to take resource / remove building
@@ -138,12 +150,18 @@ async fn main() {
 
             let mouseCellPos = IVec2::new(mouseCellX, mouseCellY);
 
+            let dist = (playerPos.x - mouseCellPos.x).abs() + (playerPos.y - mouseCellPos.y).abs();
+
             match levelMap.get(&mouseCellPos) {
                 None => println!("nothing here"),
                 Some(TileOccupant::BasicResource) => {
-                    numBasicResource += 1;
-                    levelMap.remove(&mouseCellPos);
-                    println!("{}", numBasicResource);
+                    if dist <= 3 {
+                        numBasicResource += 1;
+                        levelMap.remove(&mouseCellPos);
+                        println!("{}", numBasicResource);
+                    } else {
+                        println!("too far!");
+                    }
                 }
                 Some(TileOccupant::Input) => {}
                 Some(TileOccupant::Output) => {}
@@ -151,12 +169,24 @@ async fn main() {
                 Some(TileOccupant::G2PFactory) => {
                     println!("converts green to purple");
                     levelMap.remove(&mouseCellPos);
+                    numBasicResource += 2;
                 }
             }
         }
 
         levelMap.insert(playerPos, TileOccupant::Player);
         drawGrid(cellSize, GRAY, startX, startY, rows, cols, &levelMap);
+
+        // show resource count
+        let basicResLabel = format!("Br: {}", numBasicResource);
+        let basicResDimen = measure_text(&basicResLabel, None, 30, 1.0);
+        draw_text(
+            &basicResLabel,
+            screen_width() - basicResDimen.width - 75.0,
+            basicResDimen.height + 50.0,
+            30.0,
+            BLUE,
+        );
 
         next_frame().await;
     }
