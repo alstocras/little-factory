@@ -173,3 +173,56 @@ pub fn drawGrid(
         };
     }
 }
+
+// raycasting stuff thing transferrer idk
+pub fn raycastAndTransferItems(
+    searchLimit: u32,
+    cellWithBuilding: &IVec2,
+    mut nodeResourcesMap: HashMap<IVec2, Traveller>,
+    levelMap: HashMap<IVec2, TileOccupant>,
+    direction: IVec2,
+) {
+    // some essentials
+    let mut tilesSearched: u32 = 0;
+    let mut tileLookingAt: IVec2 = *cellWithBuilding;
+
+    // the actual function
+    while tilesSearched < searchLimit {
+        tileLookingAt = ivec2(tileLookingAt.x + direction.x, tileLookingAt.y + direction.y);
+        let activeTileHolder = levelMap.get(&tileLookingAt);
+        match activeTileHolder {
+            Some(TileOccupant::TransmitterNode)
+            | Some(TileOccupant::Input)
+            | Some(TileOccupant::Output)
+            | Some(TileOccupant::G2PFactory) => {
+                let mut resourcesPresentDest: u64 = 0;
+                let mut resourcesPresentSource: u64 = 0;
+                if let Some(RPD) = nodeResourcesMap.get(&tileLookingAt) {
+                    resourcesPresentDest = RPD.amount;
+                }
+                if let Some(RPS) = nodeResourcesMap.get(cellWithBuilding) {
+                    resourcesPresentSource = RPS.amount
+                }
+
+                if resourcesPresentDest < resourcesPresentSource {
+                    resourcesPresentSource -= 1;
+                    resourcesPresentDest += 1;
+
+                    if let Some(RPD) = nodeResourcesMap.get_mut(&tileLookingAt) {
+                        RPD.amount = resourcesPresentDest;
+                    }
+                    if let Some(RPS) = nodeResourcesMap.get_mut(cellWithBuilding) {
+                        RPS.amount = resourcesPresentSource;
+                    }
+                    println!(
+                        "source: {}, dest: {}",
+                        resourcesPresentSource, resourcesPresentDest
+                    );
+                }
+                break;
+            }
+            Some(TileOccupant::Player) | Some(TileOccupant::BasicResource) | None => {}
+        };
+        tilesSearched += 1;
+    }
+}
