@@ -59,72 +59,82 @@ fn drawGrid(
                 draw_rectangle(pixelX, pixelY, cellSize, cellSize, GOLD);
                 // go through all tiles and find the one with the shortest distance
                 for (nodePosition, node) in levelMap.iter() {
-                    if !(nodePosition == pos) {
-                        match node {
-                            TileOccupant::TransmitterNode => {
-                                // calculate manhattan distance
-                                let dist =
-                                    (nodePosition.x - pos.x).abs() + (nodePosition.y - pos.y).abs();
+                    for i in 0..2 {
+                        if !(nodePosition == pos) {
+                            match node {
+                                TileOccupant::TransmitterNode => {
+                                    // calculate manhattan distance
+                                    let dist = (nodePosition.x - pos.x).abs()
+                                        + (nodePosition.y - pos.y).abs();
 
-                                if dist < shortestDist {
-                                    shortestDist = dist;
-                                    nearestCompatibleNodePosition = *nodePosition;
+                                    if dist < shortestDist {
+                                        shortestDist = dist;
+                                        nearestCompatibleNodePosition = *nodePosition;
+                                    }
                                 }
-                            }
-                            TileOccupant::G2PFactory => {
-                                // calculate manhattan distance
-                                let dist =
-                                    (nodePosition.x - pos.x).abs() + (nodePosition.y - pos.y).abs();
+                                TileOccupant::G2PFactory => {
+                                    // calculate manhattan distance
+                                    let dist = (nodePosition.x - pos.x).abs()
+                                        + (nodePosition.y - pos.y).abs();
 
-                                if dist < shortestDist {
-                                    shortestDist = dist;
-                                    nearestCompatibleNodePosition = *nodePosition;
+                                    if dist < shortestDist {
+                                        shortestDist = dist;
+                                        nearestCompatibleNodePosition = *nodePosition;
+                                    }
                                 }
-                            }
-                            TileOccupant::Input => {
-                                // calculate manhattan distance
-                                let dist =
-                                    (nodePosition.x - pos.x).abs() + (nodePosition.y - pos.y).abs();
+                                TileOccupant::Input => {
+                                    // calculate manhattan distance
+                                    let dist = (nodePosition.x - pos.x).abs()
+                                        + (nodePosition.y - pos.y).abs();
 
-                                if dist < shortestDist {
-                                    shortestDist = dist;
-                                    nearestCompatibleNodePosition = *nodePosition;
+                                    if dist < shortestDist {
+                                        shortestDist = dist;
+                                        nearestCompatibleNodePosition = *nodePosition;
+                                    }
                                 }
-                            }
-                            TileOccupant::Output => {
-                                // calculate manhattan distance
-                                let dist =
-                                    (nodePosition.x - pos.x).abs() + (nodePosition.y - pos.y).abs();
+                                TileOccupant::Output => {
+                                    // calculate manhattan distance
+                                    let dist = (nodePosition.x - pos.x).abs()
+                                        + (nodePosition.y - pos.y).abs();
 
-                                if dist < shortestDist {
-                                    shortestDist = dist;
-                                    nearestCompatibleNodePosition = *nodePosition;
+                                    if dist < shortestDist {
+                                        shortestDist = dist;
+                                        nearestCompatibleNodePosition = *nodePosition;
+                                    }
                                 }
+                                TileOccupant::Player => {}
+                                TileOccupant::BasicResource => {}
                             }
-                            TileOccupant::Player => {}
-                            TileOccupant::BasicResource => {}
                         }
                     }
+                    println!("shortestDist: {}", shortestDist);
+                    // draw along Y
+                    draw_line(
+                        (pos.x as f32 * cellSize) + startX + (cellSize / 2.0),
+                        (pos.y as f32 * cellSize) + startY + (cellSize / 2.0),
+                        (pos.x as f32 * cellSize) + startX + (cellSize / 2.0),
+                        (nearestCompatibleNodePosition.y as f32 * cellSize)
+                            + startY
+                            + cellSize / 2.0,
+                        10.0,
+                        GOLD,
+                    );
+                    // draw along X
+                    draw_line(
+                        (pos.x as f32 * cellSize) + startX + (cellSize / 2.0),
+                        (nearestCompatibleNodePosition.y as f32 * cellSize)
+                            + startY
+                            + cellSize / 2.0,
+                        (nearestCompatibleNodePosition.x as f32 * cellSize)
+                            + startX
+                            + cellSize / 2.0,
+                        (nearestCompatibleNodePosition.y as f32 * cellSize)
+                            + startY
+                            + cellSize / 2.0,
+                        10.0,
+                        GOLD,
+                    );
                 }
-                println!("shortestDist: {}", shortestDist);
-                // draw along Y
-                draw_line(
-                    (pos.x as f32 * cellSize) + startX + (cellSize / 2.0),
-                    (pos.y as f32 * cellSize) + startY + (cellSize / 2.0),
-                    (pos.x as f32 * cellSize) + startX + (cellSize / 2.0),
-                    (nearestCompatibleNodePosition.y as f32 * cellSize) + startY + cellSize / 2.0,
-                    10.0,
-                    GOLD,
-                );
-                // draw along X
-                draw_line(
-                    (pos.x as f32 * cellSize) + startX + (cellSize / 2.0),
-                    (nearestCompatibleNodePosition.y as f32 * cellSize) + startY + cellSize / 2.0,
-                    (nearestCompatibleNodePosition.x as f32 * cellSize) + startX + cellSize / 2.0,
-                    (nearestCompatibleNodePosition.y as f32 * cellSize) + startY + cellSize / 2.0,
-                    10.0,
-                    GOLD,
-                );
             }
         };
     }
@@ -156,8 +166,9 @@ async fn main() {
 
     // building the map
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
-    levelMap.insert(IVec2::new(6, 6), TileOccupant::BasicResource);
-    levelMap.insert(IVec2::new(7, 7), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(6, 5), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(7, 5), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(8, 5), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(0, 0), TileOccupant::Input);
     levelMap.insert(IVec2::new(9, 9), TileOccupant::Output);
 
