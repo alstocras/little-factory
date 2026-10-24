@@ -107,12 +107,22 @@ fn drawGrid(
                     }
                 }
                 println!("shortestDist: {}", shortestDist);
+                // draw along Y
                 draw_line(
-                    pixelX + cellSize / 2.0,
-                    pixelY + cellSize / 2.0,
-                    (nearestCompatibleNodePosition.x as f32 * cellSize) + startX,
-                    (nearestCompatibleNodePosition.y as f32 * cellSize) + startY,
-                    1.0,
+                    (pos.x as f32 * cellSize) + startX + (cellSize / 2.0),
+                    (pos.y as f32 * cellSize) + startY + (cellSize / 2.0),
+                    (pos.x as f32 * cellSize) + startX + (cellSize / 2.0),
+                    (nearestCompatibleNodePosition.y as f32 * cellSize) + startY + cellSize / 2.0,
+                    10.0,
+                    GOLD,
+                );
+                // draw along X
+                draw_line(
+                    (pos.x as f32 * cellSize) + startX + (cellSize / 2.0),
+                    (nearestCompatibleNodePosition.y as f32 * cellSize) + startY + cellSize / 2.0,
+                    (nearestCompatibleNodePosition.x as f32 * cellSize) + startX + cellSize / 2.0,
+                    (nearestCompatibleNodePosition.y as f32 * cellSize) + startY + cellSize / 2.0,
+                    10.0,
                     GOLD,
                 );
             }
