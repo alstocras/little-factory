@@ -62,37 +62,10 @@ fn drawGrid(
                     for i in 0..2 {
                         if !(nodePosition == pos) {
                             match node {
-                                TileOccupant::TransmitterNode => {
-                                    // calculate manhattan distance
-                                    let dist = (nodePosition.x - pos.x).abs()
-                                        + (nodePosition.y - pos.y).abs();
-
-                                    if dist < shortestDist {
-                                        shortestDist = dist;
-                                        nearestCompatibleNodePosition = *nodePosition;
-                                    }
-                                }
-                                TileOccupant::G2PFactory => {
-                                    // calculate manhattan distance
-                                    let dist = (nodePosition.x - pos.x).abs()
-                                        + (nodePosition.y - pos.y).abs();
-
-                                    if dist < shortestDist {
-                                        shortestDist = dist;
-                                        nearestCompatibleNodePosition = *nodePosition;
-                                    }
-                                }
-                                TileOccupant::Input => {
-                                    // calculate manhattan distance
-                                    let dist = (nodePosition.x - pos.x).abs()
-                                        + (nodePosition.y - pos.y).abs();
-
-                                    if dist < shortestDist {
-                                        shortestDist = dist;
-                                        nearestCompatibleNodePosition = *nodePosition;
-                                    }
-                                }
-                                TileOccupant::Output => {
+                                TileOccupant::TransmitterNode
+                                | TileOccupant::Input
+                                | TileOccupant::Output
+                                | TileOccupant::G2PFactory => {
                                     // calculate manhattan distance
                                     let dist = (nodePosition.x - pos.x).abs()
                                         + (nodePosition.y - pos.y).abs();
