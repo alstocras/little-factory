@@ -293,12 +293,60 @@ async fn main() {
             }
         }
 
-        // read transmitter positions
-        let mut transmitterPositions: Vec<IVec2> = Vec::new();
-        for (buildingPosition, buildingType) in levelMap.iter() {
-            if let TileOccupant::TransmitterNode = buildingType {
-                transmitterPositions.push(*buildingPosition);
-                //               println!("found transmitter");
+        // actually run the  transfer simulation
+        let destCell: IVec2;
+        for (cellWithBuilding, buildingType) in levelMap.iter() {
+            match buildingType {
+                TileOccupant::TransmitterNode | TileOccupant::Input | TileOccupant::Output => {
+                    let mut tilesSearched: u32 = 0;
+                    let searchLimit: u32 = 5;
+                    let mut tileLookingAt: IVec2 = *cellWithBuilding;
+
+                    // north (0, -1)
+                    while tilesSearched < searchLimit {
+                        tileLookingAt = ivec2(tileLookingAt.x, tileLookingAt.y + 1);
+                        let activeTileHolder = levelMap.get(&tileLookingAt);
+                        match activeTileHolder {
+                            Some(TileOccupant::TransmitterNode)
+                            | Some(TileOccupant::Input)
+                            | Some(TileOccupant::Output)
+                            | Some(TileOccupant::G2PFactory) => {
+                                let mut resourcesPresentDest: u64 = 0;
+                                let mut resourcesPresentSource: u64 = 0;
+                                if let Some(RPD) = nodeResourcesMap.get(&tileLookingAt) {
+                                    resourcesPresentDest = *RPD;
+                                }
+                                if let Some(RPS) = nodeResourcesMap.get(cellWithBuilding) {
+                                    resourcesPresentSource = *RPS
+                                }
+
+                                if resourcesPresentDest < resourcesPresentSource {
+                                    resourcesPresentSource -= 1;
+                                    resourcesPresentDest += 1;
+
+                                    if let Some(RPD) = nodeResourcesMap.get_mut(&tileLookingAt) {
+                                        *RPD = resourcesPresentDest;
+                                    }
+                                    if let Some(RPS) = nodeResourcesMap.get_mut(cellWithBuilding) {
+                                        *RPS = resourcesPresentSource;
+                                    }
+                                    println!(
+                                        "source: {}, dest: {}",
+                                        resourcesPresentSource, resourcesPresentDest
+                                    );
+                                }
+                            }
+                            Some(TileOccupant::Player)
+                            | Some(TileOccupant::BasicResource)
+                            | None => {}
+                        };
+                        tilesSearched += 1;
+                    }
+                    tilesSearched = 0;
+                    tileLookingAt = *cellWithBuilding;
+                }
+                TileOccupant::Player | TileOccupant::BasicResource => {}
+                TileOccupant::G2PFactory => {}
             }
         }
 
