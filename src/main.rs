@@ -336,6 +336,7 @@ async fn main() {
                                         resourcesPresentSource, resourcesPresentDest
                                     );
                                 }
+                                break;
                             }
                             Some(TileOccupant::Player)
                             | Some(TileOccupant::BasicResource)
@@ -379,6 +380,7 @@ async fn main() {
                                         resourcesPresentSource, resourcesPresentDest
                                     );
                                 }
+                                break;
                             }
                             Some(TileOccupant::Player)
                             | Some(TileOccupant::BasicResource)
@@ -422,6 +424,7 @@ async fn main() {
                                         resourcesPresentSource, resourcesPresentDest
                                     );
                                 }
+                                break;
                             }
                             Some(TileOccupant::Player)
                             | Some(TileOccupant::BasicResource)
@@ -465,6 +468,7 @@ async fn main() {
                                         resourcesPresentSource, resourcesPresentDest
                                     );
                                 }
+                                break;
                             }
                             Some(TileOccupant::Player)
                             | Some(TileOccupant::BasicResource)
