@@ -210,6 +210,10 @@ pub fn raycastAndTransferItems(
                     resourceTypeSource = RPS.itemType;
                 }
 
+                if resourceTypeDest.is_none() {
+                    resourceTypeDest = resourceTypeSource;
+                }
+
                 // write to the values if it can
                 if resourcesPresentDest < resourcesPresentSource
                     && Some(resourceTypeDest) == Some(resourceTypeSource)
@@ -219,9 +223,11 @@ pub fn raycastAndTransferItems(
 
                     if let Some(RPD) = nodeResourcesMap.get_mut(&tileLookingAt) {
                         RPD.amount = resourcesPresentDest;
+                        RPD.itemType = resourceTypeDest;
                     }
                     if let Some(RPS) = nodeResourcesMap.get_mut(cellWithBuilding) {
                         RPS.amount = resourcesPresentSource;
+                        RPS.itemType = resourceTypeSource;
                     }
                     println!(
                         "source: {}, dest: {}",

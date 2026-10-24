@@ -42,7 +42,7 @@ async fn main() {
     nodeResourcesMap.insert(
         IVec2::new(9, 9),
         Traveller {
-            itemType: Some(TravellerItem::GreenItem),
+            itemType: Some(TravellerItem::PurpleItem),
             amount: u64::MIN,
         },
     );
