@@ -53,90 +53,74 @@ fn drawGrid(
             TileOccupant::Output => draw_rectangle(pixelX, pixelY, cellSize, cellSize, PURPLE),
             TileOccupant::G2PFactory => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GRAY),
             TileOccupant::TransmitterNode => {
+                let mut nearestCompatibleNodePosition: IVec2 = *pos;
+                let mut shortestDist: i32 = i32::MAX;
+                // draw a TransmitterNode
                 draw_rectangle(pixelX, pixelY, cellSize, cellSize, GOLD);
-                for (position, occupant) in levelMap.iter() {
-                    match occupant {
-                        TileOccupant::TransmitterNode => {
-                            draw_line(
-                                pos.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                10.0,
-                                GOLD,
-                            );
-                            draw_line(
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                position.y as f32 * cellSize + startY + cellSize / 2.0,
-                                10.0,
-                                GOLD,
-                            );
-                        }
-                        TileOccupant::Player => {}
-                        TileOccupant::BasicResource => {}
-                        TileOccupant::Input => {
-                            draw_line(
-                                pos.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                10.0,
-                                GOLD,
-                            );
-                            draw_line(
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                position.y as f32 * cellSize + startY + cellSize / 2.0,
-                                10.0,
-                                GOLD,
-                            );
-                        }
-                        TileOccupant::Output => {
-                            draw_line(
-                                pos.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                10.0,
-                                GOLD,
-                            );
-                            draw_line(
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                position.y as f32 * cellSize + startY + cellSize / 2.0,
-                                10.0,
-                                GOLD,
-                            );
-                        }
-                        TileOccupant::G2PFactory => {
-                            draw_line(
-                                pos.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                10.0,
-                                GOLD,
-                            );
-                            draw_line(
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                position.y as f32 * cellSize + startY + cellSize / 2.0,
-                                10.0,
-                                GOLD,
-                            );
+                // go through all tiles and find the one with the shortest distance
+                for (nodePosition, node) in levelMap.iter() {
+                    if !(nodePosition == pos) {
+                        match node {
+                            TileOccupant::TransmitterNode => {
+                                // calculate manhattan distance
+                                let dist =
+                                    (nodePosition.x - pos.x).abs() + (nodePosition.y - pos.y).abs();
+
+                                if dist < shortestDist {
+                                    shortestDist = dist;
+                                    nearestCompatibleNodePosition = *nodePosition;
+                                }
+                            }
+                            TileOccupant::G2PFactory => {
+                                // calculate manhattan distance
+                                let dist =
+                                    (nodePosition.x - pos.x).abs() + (nodePosition.y - pos.y).abs();
+
+                                if dist < shortestDist {
+                                    shortestDist = dist;
+                                    nearestCompatibleNodePosition = *nodePosition;
+                                }
+                            }
+                            TileOccupant::Input => {
+                                // calculate manhattan distance
+                                let dist =
+                                    (nodePosition.x - pos.x).abs() + (nodePosition.y - pos.y).abs();
+
+                                if dist < shortestDist {
+                                    shortestDist = dist;
+                                    nearestCompatibleNodePosition = *nodePosition;
+                                }
+                            }
+                            TileOccupant::Output => {
+                                // calculate manhattan distance
+                                let dist =
+                                    (nodePosition.x - pos.x).abs() + (nodePosition.y - pos.y).abs();
+
+                                if dist < shortestDist {
+                                    shortestDist = dist;
+                                    nearestCompatibleNodePosition = *nodePosition;
+                                }
+                            }
+                            TileOccupant::Player => {}
+                            TileOccupant::BasicResource => {}
                         }
                     }
                 }
+                println!("shortestDist: {}", shortestDist);
+                draw_line(
+                    pixelX + cellSize / 2.0,
+                    pixelY + cellSize / 2.0,
+                    (nearestCompatibleNodePosition.x as f32 * cellSize) + startX,
+                    (nearestCompatibleNodePosition.y as f32 * cellSize) + startY,
+                    1.0,
+                    GOLD,
+                );
             }
         };
     }
 }
 
+#[derive(Debug, Clone, Copy)]
 enum TileOccupant {
     Player,
     BasicResource,
