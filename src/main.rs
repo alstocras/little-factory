@@ -170,7 +170,6 @@ fn drawGrid(
                         Some(TileOccupant::Player) | Some(TileOccupant::BasicResource) | None => {}
                     };
                     tilesSearched += 1;
-                    tileLookingAt = *pos;
                 }
             }
         };
