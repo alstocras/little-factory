@@ -32,8 +32,20 @@ async fn main() {
     levelMap.insert(IVec2::new(9, 9), TileOccupant::Output);
 
     // fill the input and output boxes
-    nodeResourcesMap.insert(IVec2::new(0, 0), u64::MAX);
-    nodeResourcesMap.insert(IVec2::new(9, 9), u64::MIN);
+    nodeResourcesMap.insert(
+        IVec2::new(0, 0),
+        Traveller {
+            itemType: Some(TravellerItem::GreenItem),
+            amount: u64::MAX,
+        },
+    );
+    nodeResourcesMap.insert(
+        IVec2::new(9, 9),
+        Traveller {
+            itemType: Some(TravellerItem::GreenItem),
+            amount: u64::MIN,
+        },
+    );
 
     loop {
         clear_background(BLACK);
@@ -107,7 +119,13 @@ async fn main() {
 
                 if !levelMap.contains_key(&mouseCellPos) && dist <= 3 {
                     levelMap.insert(mouseCellPos, TileOccupant::TransmitterNode);
-                    nodeResourcesMap.insert(mouseCellPos, 0);
+                    nodeResourcesMap.insert(
+                        mouseCellPos,
+                        Traveller {
+                            itemType: None,
+                            amount: 0,
+                        },
+                    );
                     numBasicResource -= 1;
                 } else {
                     println!("occupied/too far");
@@ -129,8 +147,8 @@ async fn main() {
                     raycastAndTransferItems(
                         searchLimit,
                         cellWithBuilding,
-                        nodeResourcesMap,
-                        levelMap,
+                        &mut nodeResourcesMap,
+                        &levelMap,
                         ivec2(0, 1),
                     );
 
@@ -138,8 +156,8 @@ async fn main() {
                     raycastAndTransferItems(
                         searchLimit,
                         cellWithBuilding,
-                        nodeResourcesMap,
-                        levelMap,
+                        &mut nodeResourcesMap,
+                        &levelMap,
                         ivec2(0, -1),
                     );
 
@@ -147,8 +165,8 @@ async fn main() {
                     raycastAndTransferItems(
                         searchLimit,
                         cellWithBuilding,
-                        nodeResourcesMap,
-                        levelMap,
+                        &mut nodeResourcesMap,
+                        &levelMap,
                         ivec2(1, 0),
                     );
 
@@ -156,8 +174,8 @@ async fn main() {
                     raycastAndTransferItems(
                         searchLimit,
                         cellWithBuilding,
-                        nodeResourcesMap,
-                        levelMap,
+                        &mut nodeResourcesMap,
+                        &levelMap,
                         ivec2(-1, 0),
                     );
                 }

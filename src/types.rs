@@ -19,6 +19,6 @@ pub enum TravellerItem {
 // actual item that travels
 #[derive(Debug, Clone, Copy)]
 pub struct Traveller {
-    pub itemType: TravellerItem,
+    pub itemType: Option<TravellerItem>,
     pub amount: u64,
 }

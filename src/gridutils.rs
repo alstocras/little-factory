@@ -178,8 +178,8 @@ pub fn drawGrid(
 pub fn raycastAndTransferItems(
     searchLimit: u32,
     cellWithBuilding: &IVec2,
-    mut nodeResourcesMap: HashMap<IVec2, Traveller>,
-    levelMap: HashMap<IVec2, TileOccupant>,
+    nodeResourcesMap: &mut HashMap<IVec2, Traveller>,
+    levelMap: &HashMap<IVec2, TileOccupant>,
     direction: IVec2,
 ) {
     // some essentials
