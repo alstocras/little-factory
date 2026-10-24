@@ -2,7 +2,6 @@
 use macroquad::prelude::*;
 use macroquad::ui;
 use macroquad::ui::hash;
-use ndarray::*;
 use std::collections::*;
 
 fn drawGrid(
@@ -54,56 +53,130 @@ fn drawGrid(
             TileOccupant::Output => draw_rectangle(pixelX, pixelY, cellSize, cellSize, PURPLE),
             TileOccupant::G2PFactory => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GRAY),
             TileOccupant::TransmitterNode => {
+                // draw a TransmitterNode
                 draw_rectangle(pixelX, pixelY, cellSize, cellSize, GOLD);
-                for (position, occupant) in levelMap.iter() {
-                    match occupant {
-                        TileOccupant::TransmitterNode => {
+
+                // step forward in each direction until exceeds limit/finds a valid node
+                let searchLimit: u32 = 5;
+                let mut tilesSearched: u32 = 0;
+                let mut tileLookingAt: IVec2 = *pos;
+                let mut locatedTransmitter: IVec2 = *pos;
+
+                // north (0, -1)
+                while tilesSearched < searchLimit {
+                    tileLookingAt = ivec2(tileLookingAt.x, tileLookingAt.y - 1);
+                    let activeTileHolder = levelMap.get(&tileLookingAt);
+                    match activeTileHolder {
+                        Some(TileOccupant::TransmitterNode)
+                        | Some(TileOccupant::Input)
+                        | Some(TileOccupant::Output)
+                        | Some(TileOccupant::G2PFactory) => {
+                            locatedTransmitter = tileLookingAt;
+                            // draw the line
                             draw_line(
-                                pos.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                pixelX + cellSize / 2.0,
+                                pixelY + cellSize / 2.0,
+                                locatedTransmitter.x as f32 * cellSize + startX + cellSize / 2.0,
+                                locatedTransmitter.y as f32 * cellSize + startY + cellSize / 2.0,
                                 10.0,
                                 GOLD,
                             );
-                            draw_line(
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                position.y as f32 * cellSize + startY + cellSize / 2.0,
-                                10.0,
-                                GOLD,
-                            );
+                            break;
                         }
-                        TileOccupant::Player => {}
-                        TileOccupant::BasicResource => {}
-                        TileOccupant::Input => {}
-                        TileOccupant::Output => {}
-                        TileOccupant::G2PFactory => {
+                        Some(TileOccupant::Player) | Some(TileOccupant::BasicResource) | None => {}
+                    };
+                    tilesSearched += 1;
+                }
+                tilesSearched = 0;
+                tileLookingAt = *pos;
+
+                // south (0, 1)
+                while tilesSearched < searchLimit {
+                    tileLookingAt = ivec2(tileLookingAt.x, tileLookingAt.y + 1);
+                    let activeTileHolder = levelMap.get(&tileLookingAt);
+                    match activeTileHolder {
+                        Some(TileOccupant::TransmitterNode)
+                        | Some(TileOccupant::Input)
+                        | Some(TileOccupant::Output)
+                        | Some(TileOccupant::G2PFactory) => {
+                            locatedTransmitter = tileLookingAt;
+                            // draw the line
                             draw_line(
-                                pos.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
+                                pixelX + cellSize / 2.0,
+                                pixelY + cellSize / 2.0,
+                                locatedTransmitter.x as f32 * cellSize + startX + cellSize / 2.0,
+                                locatedTransmitter.y as f32 * cellSize + startY + cellSize / 2.0,
                                 10.0,
                                 GOLD,
                             );
-                            draw_line(
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                pos.y as f32 * cellSize + startY + cellSize / 2.0,
-                                position.x as f32 * cellSize + startX + cellSize / 2.0,
-                                position.y as f32 * cellSize + startY + cellSize / 2.0,
-                                10.0,
-                                GOLD,
-                            );
+                            break;
                         }
-                    }
+                        Some(TileOccupant::Player) | Some(TileOccupant::BasicResource) | None => {}
+                    };
+                    tilesSearched += 1;
+                }
+                tilesSearched = 0;
+                tileLookingAt = *pos;
+
+                // west (-1, 0)
+                while tilesSearched < searchLimit {
+                    tileLookingAt = ivec2(tileLookingAt.x - 1, tileLookingAt.y);
+                    let activeTileHolder = levelMap.get(&tileLookingAt);
+                    match activeTileHolder {
+                        Some(TileOccupant::TransmitterNode)
+                        | Some(TileOccupant::Input)
+                        | Some(TileOccupant::Output)
+                        | Some(TileOccupant::G2PFactory) => {
+                            locatedTransmitter = tileLookingAt;
+                            // draw the line
+                            draw_line(
+                                pixelX + cellSize / 2.0,
+                                pixelY + cellSize / 2.0,
+                                locatedTransmitter.x as f32 * cellSize + startX + cellSize / 2.0,
+                                locatedTransmitter.y as f32 * cellSize + startY + cellSize / 2.0,
+                                10.0,
+                                GOLD,
+                            );
+                            break;
+                        }
+                        Some(TileOccupant::Player) | Some(TileOccupant::BasicResource) | None => {}
+                    };
+                    tilesSearched += 1;
+                }
+                tilesSearched = 0;
+                tileLookingAt = *pos;
+
+                // east (1, 0)
+                while tilesSearched < searchLimit {
+                    tileLookingAt = ivec2(tileLookingAt.x + 1, tileLookingAt.y);
+                    let activeTileHolder = levelMap.get(&tileLookingAt);
+                    match activeTileHolder {
+                        Some(TileOccupant::TransmitterNode)
+                        | Some(TileOccupant::Input)
+                        | Some(TileOccupant::Output)
+                        | Some(TileOccupant::G2PFactory) => {
+                            locatedTransmitter = tileLookingAt;
+                            // draw the line
+                            draw_line(
+                                pixelX + cellSize / 2.0,
+                                pixelY + cellSize / 2.0,
+                                locatedTransmitter.x as f32 * cellSize + startX + cellSize / 2.0,
+                                locatedTransmitter.y as f32 * cellSize + startY + cellSize / 2.0,
+                                10.0,
+                                GOLD,
+                            );
+                            break;
+                        }
+                        Some(TileOccupant::Player) | Some(TileOccupant::BasicResource) | None => {}
+                    };
+                    tilesSearched += 1;
                 }
             }
         };
     }
 }
 
+#[derive(Debug, Clone, Copy)]
 enum TileOccupant {
     Player,
     BasicResource,
@@ -116,6 +189,7 @@ enum TileOccupant {
 #[macroquad::main("Little Factory")]
 async fn main() {
     let mut levelMap: HashMap<IVec2, TileOccupant> = HashMap::new();
+    let mut nodeResourcesMap: HashMap<IVec2, u64> = HashMap::new();
     let mut playerPos: IVec2 = IVec2::new(1, 1);
 
     let mut numBasicResource: u32 = 0;
@@ -128,10 +202,15 @@ async fn main() {
 
     // building the map
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
-    levelMap.insert(IVec2::new(6, 6), TileOccupant::BasicResource);
-    levelMap.insert(IVec2::new(7, 7), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(6, 5), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(7, 5), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(8, 5), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(0, 0), TileOccupant::Input);
     levelMap.insert(IVec2::new(9, 9), TileOccupant::Output);
+
+    // fill the input and output boxes
+    nodeResourcesMap.insert(IVec2::new(0, 0), u64::MAX);
+    nodeResourcesMap.insert(IVec2::new(9, 9), u64::MIN);
 
     loop {
         clear_background(BLACK);
@@ -205,12 +284,203 @@ async fn main() {
 
                 if !levelMap.contains_key(&mouseCellPos) && dist <= 3 {
                     levelMap.insert(mouseCellPos, TileOccupant::TransmitterNode);
+                    nodeResourcesMap.insert(mouseCellPos, 0);
                     numBasicResource -= 1;
                 } else {
                     println!("occupied/too far");
                 }
             } else {
                 println!("not enough");
+            }
+        }
+
+        // actually run the  transfer simulation
+        let destCell: IVec2;
+        for (cellWithBuilding, buildingType) in levelMap.iter() {
+            match buildingType {
+                TileOccupant::TransmitterNode | TileOccupant::Input | TileOccupant::Output => {
+                    let mut tilesSearched: u32 = 0;
+                    let searchLimit: u32 = 5;
+                    let mut tileLookingAt: IVec2 = *cellWithBuilding;
+
+                    // south (0, 1)
+                    while tilesSearched < searchLimit {
+                        tileLookingAt = ivec2(tileLookingAt.x, tileLookingAt.y + 1);
+                        let activeTileHolder = levelMap.get(&tileLookingAt);
+                        match activeTileHolder {
+                            Some(TileOccupant::TransmitterNode)
+                            | Some(TileOccupant::Input)
+                            | Some(TileOccupant::Output)
+                            | Some(TileOccupant::G2PFactory) => {
+                                let mut resourcesPresentDest: u64 = 0;
+                                let mut resourcesPresentSource: u64 = 0;
+                                if let Some(RPD) = nodeResourcesMap.get(&tileLookingAt) {
+                                    resourcesPresentDest = *RPD;
+                                }
+                                if let Some(RPS) = nodeResourcesMap.get(cellWithBuilding) {
+                                    resourcesPresentSource = *RPS
+                                }
+
+                                if resourcesPresentDest < resourcesPresentSource {
+                                    resourcesPresentSource -= 1;
+                                    resourcesPresentDest += 1;
+
+                                    if let Some(RPD) = nodeResourcesMap.get_mut(&tileLookingAt) {
+                                        *RPD = resourcesPresentDest;
+                                    }
+                                    if let Some(RPS) = nodeResourcesMap.get_mut(cellWithBuilding) {
+                                        *RPS = resourcesPresentSource;
+                                    }
+                                    println!(
+                                        "source: {}, dest: {}",
+                                        resourcesPresentSource, resourcesPresentDest
+                                    );
+                                }
+                                break;
+                            }
+                            Some(TileOccupant::Player)
+                            | Some(TileOccupant::BasicResource)
+                            | None => {}
+                        };
+                        tilesSearched += 1;
+                    }
+                    tilesSearched = 0;
+                    tileLookingAt = *cellWithBuilding;
+
+                    // north (0, -1)
+                    while tilesSearched < searchLimit {
+                        tileLookingAt = ivec2(tileLookingAt.x, tileLookingAt.y - 1);
+                        let activeTileHolder = levelMap.get(&tileLookingAt);
+                        match activeTileHolder {
+                            Some(TileOccupant::TransmitterNode)
+                            | Some(TileOccupant::Input)
+                            | Some(TileOccupant::Output)
+                            | Some(TileOccupant::G2PFactory) => {
+                                let mut resourcesPresentDest: u64 = 0;
+                                let mut resourcesPresentSource: u64 = 0;
+                                if let Some(RPD) = nodeResourcesMap.get(&tileLookingAt) {
+                                    resourcesPresentDest = *RPD;
+                                }
+                                if let Some(RPS) = nodeResourcesMap.get(cellWithBuilding) {
+                                    resourcesPresentSource = *RPS
+                                }
+
+                                if resourcesPresentDest < resourcesPresentSource {
+                                    resourcesPresentSource -= 1;
+                                    resourcesPresentDest += 1;
+
+                                    if let Some(RPD) = nodeResourcesMap.get_mut(&tileLookingAt) {
+                                        *RPD = resourcesPresentDest;
+                                    }
+                                    if let Some(RPS) = nodeResourcesMap.get_mut(cellWithBuilding) {
+                                        *RPS = resourcesPresentSource;
+                                    }
+                                    println!(
+                                        "source: {}, dest: {}",
+                                        resourcesPresentSource, resourcesPresentDest
+                                    );
+                                }
+                                break;
+                            }
+                            Some(TileOccupant::Player)
+                            | Some(TileOccupant::BasicResource)
+                            | None => {}
+                        };
+                        tilesSearched += 1;
+                    }
+                    tilesSearched = 0;
+                    tileLookingAt = *cellWithBuilding;
+
+                    // east (1, 0)
+                    while tilesSearched < searchLimit {
+                        tileLookingAt = ivec2(tileLookingAt.x + 1, tileLookingAt.y);
+                        let activeTileHolder = levelMap.get(&tileLookingAt);
+                        match activeTileHolder {
+                            Some(TileOccupant::TransmitterNode)
+                            | Some(TileOccupant::Input)
+                            | Some(TileOccupant::Output)
+                            | Some(TileOccupant::G2PFactory) => {
+                                let mut resourcesPresentDest: u64 = 0;
+                                let mut resourcesPresentSource: u64 = 0;
+                                if let Some(RPD) = nodeResourcesMap.get(&tileLookingAt) {
+                                    resourcesPresentDest = *RPD;
+                                }
+                                if let Some(RPS) = nodeResourcesMap.get(cellWithBuilding) {
+                                    resourcesPresentSource = *RPS
+                                }
+
+                                if resourcesPresentDest < resourcesPresentSource {
+                                    resourcesPresentSource -= 1;
+                                    resourcesPresentDest += 1;
+
+                                    if let Some(RPD) = nodeResourcesMap.get_mut(&tileLookingAt) {
+                                        *RPD = resourcesPresentDest;
+                                    }
+                                    if let Some(RPS) = nodeResourcesMap.get_mut(cellWithBuilding) {
+                                        *RPS = resourcesPresentSource;
+                                    }
+                                    println!(
+                                        "source: {}, dest: {}",
+                                        resourcesPresentSource, resourcesPresentDest
+                                    );
+                                }
+                                break;
+                            }
+                            Some(TileOccupant::Player)
+                            | Some(TileOccupant::BasicResource)
+                            | None => {}
+                        };
+                        tilesSearched += 1;
+                    }
+                    tilesSearched = 0;
+                    tileLookingAt = *cellWithBuilding;
+
+                    // west (-1, 0)
+                    while tilesSearched < searchLimit {
+                        tileLookingAt = ivec2(tileLookingAt.x - 1, tileLookingAt.y);
+                        let activeTileHolder = levelMap.get(&tileLookingAt);
+                        match activeTileHolder {
+                            Some(TileOccupant::TransmitterNode)
+                            | Some(TileOccupant::Input)
+                            | Some(TileOccupant::Output)
+                            | Some(TileOccupant::G2PFactory) => {
+                                let mut resourcesPresentDest: u64 = 0;
+                                let mut resourcesPresentSource: u64 = 0;
+                                if let Some(RPD) = nodeResourcesMap.get(&tileLookingAt) {
+                                    resourcesPresentDest = *RPD;
+                                }
+                                if let Some(RPS) = nodeResourcesMap.get(cellWithBuilding) {
+                                    resourcesPresentSource = *RPS
+                                }
+
+                                if resourcesPresentDest < resourcesPresentSource {
+                                    resourcesPresentSource -= 1;
+                                    resourcesPresentDest += 1;
+
+                                    if let Some(RPD) = nodeResourcesMap.get_mut(&tileLookingAt) {
+                                        *RPD = resourcesPresentDest;
+                                    }
+                                    if let Some(RPS) = nodeResourcesMap.get_mut(cellWithBuilding) {
+                                        *RPS = resourcesPresentSource;
+                                    }
+                                    println!(
+                                        "source: {}, dest: {}",
+                                        resourcesPresentSource, resourcesPresentDest
+                                    );
+                                }
+                                break;
+                            }
+                            Some(TileOccupant::Player)
+                            | Some(TileOccupant::BasicResource)
+                            | None => {}
+                        };
+                        tilesSearched += 1;
+                    }
+                    tilesSearched = 0;
+                    tileLookingAt = *cellWithBuilding;
+                }
+                TileOccupant::Player | TileOccupant::BasicResource => {}
+                TileOccupant::G2PFactory => {}
             }
         }
 
