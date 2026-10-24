@@ -1,8 +1,11 @@
 #![allow(non_snake_case)]
+mod types;
+
 use macroquad::prelude::*;
 use macroquad::ui;
 use macroquad::ui::hash;
 use std::collections::*;
+use types::*;
 
 fn drawGrid(
     cellSize: f32,
@@ -174,16 +177,6 @@ fn drawGrid(
             }
         };
     }
-}
-
-#[derive(Debug, Clone, Copy)]
-enum TileOccupant {
-    Player,
-    BasicResource,
-    Input,
-    Output,
-    G2PFactory,
-    TransmitterNode,
 }
 
 #[macroquad::main("Little Factory")]
