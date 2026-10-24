@@ -107,7 +107,6 @@ fn drawGrid(
                             }
                         }
                     }
-                    println!("shortestDist: {}", shortestDist);
                     // draw along Y
                     draw_line(
                         (pos.x as f32 * cellSize) + startX + (cellSize / 2.0),
