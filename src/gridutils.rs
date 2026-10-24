@@ -216,7 +216,7 @@ pub fn raycastAndTransferItems(
 
                 // write to the values if it can
                 if resourcesPresentDest < resourcesPresentSource
-                    && Some(resourceTypeDest) == Some(resourceTypeSource)
+                    && resourceTypeDest == resourceTypeSource
                 {
                     resourcesPresentSource -= 1;
                     resourcesPresentDest += 1;
@@ -234,7 +234,6 @@ pub fn raycastAndTransferItems(
                         resourcesPresentSource, resourcesPresentDest
                     );
                 }
-                break;
             }
             Some(TileOccupant::Player) | Some(TileOccupant::BasicResource) | None => {}
         };
