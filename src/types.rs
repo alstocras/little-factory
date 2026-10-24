@@ -10,7 +10,7 @@ pub enum TileOccupant {
 }
 
 // items (type) that travel
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum TravellerItem {
     GreenItem,
     PurpleItem,
