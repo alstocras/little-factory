@@ -444,28 +444,54 @@ async fn main() {
                 );
 
                 // show the factory & transmitter
-                let transmitterLabel = format!("Transmitter");
-                let transmitterLabelDimen = measure_text(&transmitterLabel, None, 30, 1.0);
-                draw_text(
-                    &transmitterLabel,
-                    25.0,
-                    screen_height() - transmitterLabelDimen.height - 30.0,
-                    30.0,
-                    gold,
-                );
 
-                let factoryLabel = format!("Factory");
-                let factoryLabelDimen = measure_text(&factoryLabel, None, 30, 1.0);
-                draw_text(
-                    &factoryLabel,
-                    25.0,
-                    screen_height()
-                        - transmitterLabelDimen.height
-                        - factoryLabelDimen.height
-                        - 50.0,
-                    30.0,
-                    grey,
-                );
+                if buildingSelected == TileOccupant::TransmitterNode {
+                    let transmitterLabel = format!("1: Transmitter");
+                    let transmitterLabelDimen = measure_text(&transmitterLabel, None, 30, 1.0);
+                    draw_text(
+                        &transmitterLabel,
+                        25.0,
+                        screen_height() - transmitterLabelDimen.height - 30.0,
+                        30.0,
+                        gold,
+                    );
+
+                    let factoryLabel = format!("2: Factory");
+                    let factoryLabelDimen = measure_text(&factoryLabel, None, 30, 1.0);
+                    draw_text(
+                        &factoryLabel,
+                        25.0,
+                        screen_height()
+                            - transmitterLabelDimen.height
+                            - factoryLabelDimen.height
+                            - 35.0,
+                        30.0,
+                        grey,
+                    );
+                } else if buildingSelected == TileOccupant::G2PFactory {
+                    let transmitterLabel = format!("1: Transmitter");
+                    let transmitterLabelDimen = measure_text(&transmitterLabel, None, 30, 1.0);
+                    draw_text(
+                        &transmitterLabel,
+                        25.0,
+                        screen_height() - transmitterLabelDimen.height - 30.0,
+                        30.0,
+                        grey,
+                    );
+
+                    let factoryLabel = format!("2: Factory");
+                    let factoryLabelDimen = measure_text(&factoryLabel, None, 30, 1.0);
+                    draw_text(
+                        &factoryLabel,
+                        25.0,
+                        screen_height()
+                            - transmitterLabelDimen.height
+                            - factoryLabelDimen.height
+                            - 35.0,
+                        30.0,
+                        gold,
+                    );
+                }
 
                 if is_key_down(KeyCode::Key1) {
                     buildingSelected = TileOccupant::TransmitterNode;
