@@ -1,3 +1,4 @@
+// gridutils.rs
 use crate::factories::*;
 use crate::types::*;
 use macroquad::prelude::*;
@@ -218,17 +219,22 @@ pub fn raycastAndTransferItems(
                     resourcesPresentSource = RPS.amount;
                     resourceTypeSource = RPS.itemType;
                 }
+                println!(
+                    "source {:?}: type={:?}, amount={}; destination {:?}: type={:?}, amount={}",
+                    cellWithBuilding,
+                    resourceTypeSource,
+                    resourcesPresentSource,
+                    tileLookingAt,
+                    resourceTypeDest,
+                    resourcesPresentDest,
+                );
 
                 // write to the values if it can
-                if resourcesPresentDest < resourcesPresentSource {
+                if resourcesPresentSource > 0
+                    && (resourceTypeDest.is_none() || resourceTypeDest == resourceTypeSource)
+                {
                     resourcesPresentSource -= 1;
                     resourcesPresentDest += 1;
-
-                    if resourceTypeSource != resourceTypeDest
-                        && levelMap.get(&tileLookingAt) == Some(&TileOccupant::Output)
-                    {
-                        resourcesPresentDest = 0;
-                    }
 
                     if let Some(RPD) = nodeResourcesMap.get_mut(&tileLookingAt) {
                         RPD.amount = resourcesPresentDest;
