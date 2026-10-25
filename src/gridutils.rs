@@ -26,6 +26,11 @@ pub fn drawGrid(
     transmitterAnim: &mut AnimatedSprite,
     transmitterTexture: &Texture2D,
 ) {
+    // palette
+    let blue = Color::from_hex(0x4f61a7);
+    let gold = Color::from_hex(0xdbaf91);
+    let white = Color::from_hex(0xd9d4d8);
+
     // draw lines
     let mut currentX: f32 = startX;
     let mut currentY: f32 = startY;
@@ -67,7 +72,7 @@ pub fn drawGrid(
                     playerTexture,
                     pixelX,
                     pixelY,
-                    WHITE,
+                    white,
                     DrawTextureParams {
                         source: Some(frame.source_rect),
                         dest_size: Some(frame.dest_size),
@@ -83,7 +88,7 @@ pub fn drawGrid(
                     basicResourceTexture,
                     pixelX,
                     pixelY,
-                    WHITE,
+                    white,
                     DrawTextureParams {
                         source: Some(frame.source_rect),
                         dest_size: Some(frame.dest_size),
@@ -99,7 +104,7 @@ pub fn drawGrid(
                     inputTexture,
                     pixelX,
                     pixelY,
-                    WHITE,
+                    white,
                     DrawTextureParams {
                         source: Some(frame.source_rect),
                         dest_size: Some(frame.dest_size),
@@ -115,7 +120,7 @@ pub fn drawGrid(
                     outputTexture,
                     pixelX,
                     pixelY,
-                    WHITE,
+                    white,
                     DrawTextureParams {
                         source: Some(frame.source_rect),
                         dest_size: Some(frame.dest_size),
@@ -131,7 +136,7 @@ pub fn drawGrid(
                     g2pfactoryTexture,
                     pixelX,
                     pixelY,
-                    WHITE,
+                    white,
                     DrawTextureParams {
                         source: Some(frame.source_rect),
                         dest_size: Some(frame.dest_size),
@@ -148,7 +153,7 @@ pub fn drawGrid(
                     transmitterTexture,
                     pixelX,
                     pixelY,
-                    WHITE,
+                    white,
                     DrawTextureParams {
                         source: Some(frame.source_rect),
                         dest_size: Some(frame.dest_size),
@@ -180,7 +185,7 @@ pub fn drawGrid(
                                 locatedTransmitter.x as f32 * cellSize + startX + cellSize / 2.0,
                                 locatedTransmitter.y as f32 * cellSize + startY + cellSize / 2.0,
                                 10.0,
-                                GOLD,
+                                gold,
                             );
                             break;
                         }
@@ -208,7 +213,7 @@ pub fn drawGrid(
                                 locatedTransmitter.x as f32 * cellSize + startX + cellSize / 2.0,
                                 locatedTransmitter.y as f32 * cellSize + startY + cellSize / 2.0,
                                 10.0,
-                                GOLD,
+                                gold,
                             );
                             break;
                         }
@@ -236,7 +241,7 @@ pub fn drawGrid(
                                 locatedTransmitter.x as f32 * cellSize + startX + cellSize / 2.0,
                                 locatedTransmitter.y as f32 * cellSize + startY + cellSize / 2.0,
                                 10.0,
-                                GOLD,
+                                gold,
                             );
                             break;
                         }
@@ -264,7 +269,7 @@ pub fn drawGrid(
                                 locatedTransmitter.x as f32 * cellSize + startX + cellSize / 2.0,
                                 locatedTransmitter.y as f32 * cellSize + startY + cellSize / 2.0,
                                 10.0,
-                                GOLD,
+                                gold,
                             );
                             break;
                         }

@@ -14,6 +14,13 @@ use types::*;
 
 #[macroquad::main("Little Factory")]
 async fn main() {
+    // palette
+    let blue = Color::from_hex(0x4f61a7);
+    let gold = Color::from_hex(0xdbaf91);
+    let white = Color::from_hex(0xd9d4d8);
+    let purple = Color::from_hex(0xb991db);
+    let black = Color::from_hex(0x2d272f);
+
     set_pc_assets_folder("assets");
 
     let font = load_ttf_font("fonts/font.ttf").await.unwrap();
@@ -167,7 +174,7 @@ async fn main() {
     );
 
     loop {
-        clear_background(BLACK);
+        clear_background(black);
 
         match gameState {
             GameState::MainMenu => {
@@ -184,14 +191,14 @@ async fn main() {
                     screen_width() / 2.0 - titleDimen.width / 2.0,
                     screen_height() / 2.0,
                     50.0,
-                    GOLD,
+                    gold,
                 );
                 draw_text(
                     "space to play, esc to quit",
                     screen_width() / 2.0 - helperDimen.width / 2.0,
                     screen_height() / 2.0 + titleDimen.height + 25.0,
                     30.0,
-                    WHITE,
+                    white,
                 );
             }
             GameState::Win => {
@@ -201,7 +208,7 @@ async fn main() {
                     screen_width() / 2.0 - winDimen.width / 2.0,
                     screen_height() / 2.0,
                     40.0,
-                    GOLD,
+                    gold,
                 );
             }
             GameState::Game => {
@@ -420,7 +427,7 @@ async fn main() {
                     screen_width() - basicResDimen.width - 25.0,
                     screen_height() - basicResDimen.height - 25.0,
                     30.0,
-                    BLUE,
+                    blue,
                 );
 
                 // show progress of plutonium
@@ -432,7 +439,7 @@ async fn main() {
                     screen_width() - progLabelDimen.width - 25.0,
                     screen_height() - basicResDimen.height - progLabelDimen.height - 30.0,
                     30.0,
-                    PURPLE,
+                    purple,
                 );
 
                 // the build menu
