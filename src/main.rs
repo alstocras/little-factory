@@ -45,6 +45,22 @@ async fn main() {
     inputSpritesheet.set_filter(FilterMode::Nearest);
     outputSpritesheet.set_filter(FilterMode::Nearest);
 
+    build_textures_atlas();
+
+    // animating sprites
+    let mut input = AnimatedSprite::new(
+        50,
+        50,
+        &[Animation {
+            name: "idle".to_string(),
+            row: 0,
+            frames: 2,
+            fps: 12,
+        }],
+        true,
+    );
+    input.set_animation(0);
+
     // building the map
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(6, 5), TileOccupant::BasicResource);
@@ -286,7 +302,17 @@ async fn main() {
                 }
 
                 levelMap.insert(playerPos, TileOccupant::Player);
-                drawGrid(cellSize, GRAY, startX, startY, rows, cols, &levelMap);
+                drawGrid(
+                    cellSize,
+                    GRAY,
+                    startX,
+                    startY,
+                    rows,
+                    cols,
+                    &levelMap,
+                    &mut input,
+                    &inputSpritesheet,
+                );
 
                 // check for win condition
                 if nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount >= 2000 {

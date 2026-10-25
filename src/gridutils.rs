@@ -1,6 +1,7 @@
 // gridutils.rs
 use crate::factories::*;
 use crate::types::*;
+use macroquad::experimental::animation::*;
 use macroquad::prelude::*;
 use std::collections::*;
 
@@ -12,6 +13,8 @@ pub fn drawGrid(
     rows: u32,
     cols: u32,
     levelMap: &HashMap<IVec2, TileOccupant>,
+    inputAnim: &mut AnimatedSprite,
+    inputTexture: &Texture2D,
 ) {
     // draw lines
     let mut currentX: f32 = startX;
@@ -49,7 +52,22 @@ pub fn drawGrid(
         match occupant {
             TileOccupant::Player => draw_rectangle(pixelX, pixelY, cellSize, cellSize, RED),
             TileOccupant::BasicResource => draw_rectangle(pixelX, pixelY, cellSize, cellSize, BLUE),
-            TileOccupant::Input => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GREEN),
+            TileOccupant::Input => {
+                let frame = inputAnim.frame();
+
+                draw_texture_ex(
+                    inputTexture,
+                    pixelX,
+                    pixelY,
+                    WHITE,
+                    DrawTextureParams {
+                        source: Some(frame.source_rect),
+                        dest_size: Some(frame.dest_size),
+                        ..Default::default()
+                    },
+                );
+                inputAnim.update();
+            }
             TileOccupant::Output => draw_rectangle(pixelX, pixelY, cellSize, cellSize, PURPLE),
             TileOccupant::G2PFactory => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GRAY),
             TileOccupant::TransmitterNode => {
