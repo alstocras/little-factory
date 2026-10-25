@@ -22,7 +22,7 @@ async fn main() {
 
     let mut numBasicResource: u32 = 0;
 
-    let mut gameState: GameState = GameState::Game;
+    let mut gameState: GameState = GameState::MainMenu;
     let mut buildingSelected: TileOccupant = TileOccupant::TransmitterNode;
 
     let rows: u32 = 10;
@@ -59,6 +59,30 @@ async fn main() {
         clear_background(BLACK);
 
         match gameState {
+            GameState::MainMenu => {
+                if is_key_down(KeyCode::Space) {
+                    gameState = GameState::Game;
+                }
+                if is_key_down(KeyCode::Escape) {
+                    std::process::exit(1);
+                }
+                let titleDimen = measure_text("Little Factory", None, 50, 1.0);
+                let helperDimen = measure_text("space to play, esc to quit", None, 30, 1.0);
+                draw_text(
+                    "Little Factory",
+                    screen_width() / 2.0 - titleDimen.width / 2.0,
+                    screen_height() / 2.0,
+                    50.0,
+                    GOLD,
+                );
+                draw_text(
+                    "space to play, esc to quit",
+                    screen_width() / 2.0 - helperDimen.width / 2.0,
+                    screen_height() / 2.0 + titleDimen.height + 25.0,
+                    30.0,
+                    WHITE,
+                );
+            }
             GameState::Win => {
                 let winDimen = measure_text("successful transfer!", None, 40, 1.0);
                 draw_text(
