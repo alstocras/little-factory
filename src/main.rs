@@ -41,9 +41,13 @@ async fn main() {
     let outputSpritesheet = load_texture("sprites/output.png")
         .await
         .expect("unable to load output");
+    let playerSpritesheet = load_texture("sprites/player-walk.png")
+        .await
+        .expect("unable to load output");
 
     inputSpritesheet.set_filter(FilterMode::Nearest);
     outputSpritesheet.set_filter(FilterMode::Nearest);
+    playerSpritesheet.set_filter(FilterMode::Nearest);
 
     build_textures_atlas();
 
@@ -60,6 +64,32 @@ async fn main() {
         true,
     );
     input.set_animation(0);
+
+    let mut output = AnimatedSprite::new(
+        50,
+        50,
+        &[Animation {
+            name: "idle".to_string(),
+            row: 0,
+            frames: 2,
+            fps: 12,
+        }],
+        true,
+    );
+    output.set_animation(0);
+
+    let mut player = AnimatedSprite::new(
+        50,
+        50,
+        &[Animation {
+            name: "walk".to_string(),
+            row: 0,
+            frames: 2,
+            fps: 12,
+        }],
+        true,
+    );
+    player.set_animation(0);
 
     // building the map
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
@@ -312,6 +342,10 @@ async fn main() {
                     &levelMap,
                     &mut input,
                     &inputSpritesheet,
+                    &mut output,
+                    &outputSpritesheet,
+                    &mut player,
+                    &playerSpritesheet,
                 );
 
                 // check for win condition

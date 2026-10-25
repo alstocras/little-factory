@@ -15,6 +15,10 @@ pub fn drawGrid(
     levelMap: &HashMap<IVec2, TileOccupant>,
     inputAnim: &mut AnimatedSprite,
     inputTexture: &Texture2D,
+    outputAnim: &mut AnimatedSprite,
+    outputTexture: &Texture2D,
+    playerAnim: &mut AnimatedSprite,
+    playerTexture: &Texture2D,
 ) {
     // draw lines
     let mut currentX: f32 = startX;
@@ -50,7 +54,22 @@ pub fn drawGrid(
         let pixelY = (pos.y * cellSize as i32) as f32 + startY;
 
         match occupant {
-            TileOccupant::Player => draw_rectangle(pixelX, pixelY, cellSize, cellSize, RED),
+            TileOccupant::Player => {
+                let frame = playerAnim.frame();
+
+                draw_texture_ex(
+                    playerTexture,
+                    pixelX,
+                    pixelY,
+                    WHITE,
+                    DrawTextureParams {
+                        source: Some(frame.source_rect),
+                        dest_size: Some(frame.dest_size),
+                        ..Default::default()
+                    },
+                );
+                playerAnim.update();
+            }
             TileOccupant::BasicResource => draw_rectangle(pixelX, pixelY, cellSize, cellSize, BLUE),
             TileOccupant::Input => {
                 let frame = inputAnim.frame();
@@ -68,7 +87,22 @@ pub fn drawGrid(
                 );
                 inputAnim.update();
             }
-            TileOccupant::Output => draw_rectangle(pixelX, pixelY, cellSize, cellSize, PURPLE),
+            TileOccupant::Output => {
+                let frame = outputAnim.frame();
+
+                draw_texture_ex(
+                    outputTexture,
+                    pixelX,
+                    pixelY,
+                    WHITE,
+                    DrawTextureParams {
+                        source: Some(frame.source_rect),
+                        dest_size: Some(frame.dest_size),
+                        ..Default::default()
+                    },
+                );
+                outputAnim.update();
+            }
             TileOccupant::G2PFactory => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GRAY),
             TileOccupant::TransmitterNode => {
                 // draw a TransmitterNode
