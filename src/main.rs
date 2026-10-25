@@ -1,7 +1,9 @@
 #![allow(non_snake_case)]
+mod factories;
 mod gridutils;
 mod types;
 
+use factories::*;
 use gridutils::*;
 use macroquad::prelude::*;
 use macroquad::ui;
@@ -95,6 +97,13 @@ async fn main() {
 
                 if !levelMap.contains_key(&mouseCellPos) && dist <= 3 {
                     levelMap.insert(mouseCellPos, TileOccupant::G2PFactory);
+                    nodeResourcesMap.insert(
+                        mouseCellPos,
+                        Traveller {
+                            itemType: Some(TravellerItem::GreenItem),
+                            amount: 0,
+                        },
+                    );
                     numBasicResource -= 2;
                 } else {
                     println!("occupied/too far");
@@ -138,7 +147,7 @@ async fn main() {
         // actually run the  transfer simulation
         for (cellWithBuilding, buildingType) in levelMap.iter() {
             match buildingType {
-                TileOccupant::TransmitterNode | TileOccupant::Input => {
+                TileOccupant::TransmitterNode | TileOccupant::Input | TileOccupant::G2PFactory => {
                     let searchLimit: u32 = 5;
 
                     // south (0, 1)
@@ -178,7 +187,6 @@ async fn main() {
                     );
                 }
                 TileOccupant::Player | TileOccupant::BasicResource => {}
-                TileOccupant::G2PFactory => {}
                 TileOccupant::Output => {}
             }
         }

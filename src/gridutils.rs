@@ -1,3 +1,4 @@
+use crate::factories::*;
 use crate::types::*;
 use macroquad::prelude::*;
 use std::collections::*;
@@ -191,7 +192,9 @@ pub fn raycastAndTransferItems(
         tileLookingAt = ivec2(tileLookingAt.x + direction.x, tileLookingAt.y + direction.y);
         let activeTileHolder = levelMap.get(&tileLookingAt);
         match activeTileHolder {
-            Some(TileOccupant::TransmitterNode) | Some(TileOccupant::Output) => {
+            Some(TileOccupant::TransmitterNode)
+            | Some(TileOccupant::Output)
+            | Some(TileOccupant::G2PFactory) => {
                 let mut resourcesPresentDest: u64 = 0;
                 let mut resourcesPresentSource: u64 = 0;
                 let mut resourceTypeDest: Option<TravellerItem> = None;
@@ -205,6 +208,14 @@ pub fn raycastAndTransferItems(
                 if let Some(RPS) = nodeResourcesMap.get(cellWithBuilding) {
                     resourcesPresentSource = RPS.amount;
                     resourceTypeSource = RPS.itemType;
+                }
+                if activeTileHolder == Some(&TileOccupant::G2PFactory) {
+                    convertItemType(
+                        nodeResourcesMap.clone(),
+                        TravellerItem::GreenItem,
+                        TravellerItem::PurpleItem,
+                        tileLookingAt,
+                    );
                 }
 
                 // write to the values if it can
@@ -235,7 +246,6 @@ pub fn raycastAndTransferItems(
             Some(TileOccupant::Player)
             | Some(TileOccupant::BasicResource)
             | Some(TileOccupant::Input)
-            | Some(TileOccupant::G2PFactory)
             | None => {}
         };
         tilesSearched += 1;
