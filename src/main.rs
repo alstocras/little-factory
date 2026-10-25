@@ -3,12 +3,11 @@ mod factories;
 mod gridutils;
 mod types;
 
-use factories::*;
+use ::rand::*;
 use gridutils::*;
+use macroquad::audio::*;
 use macroquad::experimental::animation::*;
 use macroquad::prelude::*;
-use macroquad::ui;
-use macroquad::ui::hash;
 use std::collections::*;
 use types::*;
 
@@ -26,6 +25,24 @@ async fn main() {
 
     let font = load_ttf_font("fonts/font.ttf").await.unwrap();
     set_default_font(font);
+
+    let titleTheme = load_sound("music/title.ogg").await.expect("no");
+    let mainTheme = load_sound("music/main.ogg").await.expect("no");
+    let winTheme = load_sound("music/win.ogg").await.expect("No");
+
+    let tracks = [titleTheme, mainTheme, winTheme];
+
+    // randomly select track
+    let index: usize = random_range(0..=2);
+    let chosenTrack = &tracks[index];
+
+    play_sound(
+        chosenTrack,
+        PlaySoundParams {
+            looped: true,
+            volume: 0.5,
+        },
+    );
 
     let mut levelMap: HashMap<IVec2, TileOccupant> = HashMap::new();
     let mut nodeResourcesMap: HashMap<IVec2, Traveller> = HashMap::new();
@@ -155,6 +172,10 @@ async fn main() {
     levelMap.insert(IVec2::new(6, 5), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(7, 5), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(8, 5), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(8, 6), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(7, 6), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(6, 6), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(5, 6), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(0, 0), TileOccupant::Input);
     levelMap.insert(IVec2::new(9, 9), TileOccupant::Output);
 
@@ -414,14 +435,14 @@ async fn main() {
                 );
 
                 // check for win condition
-                if nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount >= 2000 {
+                if nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount >= 1000 {
                     gameState = GameState::Win;
                 }
 
                 // UI RENDERING
 
                 // show bromine count
-                let basicResLabel = format!("Br: {}", numBasicResource);
+                let basicResLabel = format!("Bromine: {}", numBasicResource);
                 let basicResDimen = measure_text(&basicResLabel, None, 30, 1.0);
                 draw_text(
                     &basicResLabel,
@@ -433,7 +454,7 @@ async fn main() {
 
                 // show progress of plutonium
                 let resourcesInOutput = nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount;
-                let progLabel = format!("Transferred: {} / 2k", resourcesInOutput);
+                let progLabel = format!("Transferred: {} / 1k", resourcesInOutput);
                 let progLabelDimen = measure_text(&progLabel, None, 30, 1.0);
                 draw_text(
                     &progLabel,
@@ -443,11 +464,60 @@ async fn main() {
                     purple,
                 );
 
-                // the build menu
-                if ui::root_ui().button(None, "Transmitter") {
+                // show the factory & transmitter
+
+                if buildingSelected == TileOccupant::TransmitterNode {
+                    let transmitterLabel = format!("1: Transmitter");
+                    let transmitterLabelDimen = measure_text(&transmitterLabel, None, 30, 1.0);
+                    draw_text(
+                        &transmitterLabel,
+                        25.0,
+                        screen_height() - transmitterLabelDimen.height - 30.0,
+                        30.0,
+                        gold,
+                    );
+
+                    let factoryLabel = format!("2: Factory");
+                    let factoryLabelDimen = measure_text(&factoryLabel, None, 30, 1.0);
+                    draw_text(
+                        &factoryLabel,
+                        25.0,
+                        screen_height()
+                            - transmitterLabelDimen.height
+                            - factoryLabelDimen.height
+                            - 35.0,
+                        30.0,
+                        grey,
+                    );
+                } else if buildingSelected == TileOccupant::G2PFactory {
+                    let transmitterLabel = format!("1: Transmitter");
+                    let transmitterLabelDimen = measure_text(&transmitterLabel, None, 30, 1.0);
+                    draw_text(
+                        &transmitterLabel,
+                        25.0,
+                        screen_height() - transmitterLabelDimen.height - 30.0,
+                        30.0,
+                        grey,
+                    );
+
+                    let factoryLabel = format!("2: Factory");
+                    let factoryLabelDimen = measure_text(&factoryLabel, None, 30, 1.0);
+                    draw_text(
+                        &factoryLabel,
+                        25.0,
+                        screen_height()
+                            - transmitterLabelDimen.height
+                            - factoryLabelDimen.height
+                            - 35.0,
+                        30.0,
+                        gold,
+                    );
+                }
+
+                if is_key_down(KeyCode::Key1) {
                     buildingSelected = TileOccupant::TransmitterNode;
                 }
-                if ui::root_ui().button(None, "Ge-Pu Factory") {
+                if is_key_down(KeyCode::Key2) {
                     buildingSelected = TileOccupant::G2PFactory;
                 }
             }
