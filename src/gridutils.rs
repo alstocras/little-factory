@@ -232,13 +232,16 @@ pub fn raycastAndTransferItems(
                 // write to the values if it can
                 if resourcesPresentSource > 0
                     && (resourceTypeDest.is_none() || resourceTypeDest == resourceTypeSource)
+                    && (levelMap.get(cellWithBuilding) != Some(&TileOccupant::G2PFactory)
+                        || resourceTypeSource == Some(TravellerItem::PurpleItem))
                 {
                     resourcesPresentSource -= 1;
                     resourcesPresentDest += 1;
+                    let newDestType = resourceTypeDest.or(resourceTypeSource);
 
                     if let Some(RPD) = nodeResourcesMap.get_mut(&tileLookingAt) {
                         RPD.amount = resourcesPresentDest;
-                        RPD.itemType = resourceTypeDest;
+                        RPD.itemType = newDestType;
                     }
                     if let Some(RPS) = nodeResourcesMap.get_mut(cellWithBuilding) {
                         RPS.amount = resourcesPresentSource;
