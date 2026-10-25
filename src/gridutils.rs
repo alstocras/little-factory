@@ -19,6 +19,12 @@ pub fn drawGrid(
     outputTexture: &Texture2D,
     playerAnim: &mut AnimatedSprite,
     playerTexture: &Texture2D,
+    basicResourceAnim: &mut AnimatedSprite,
+    basicResourceTexture: &Texture2D,
+    g2pfactoryAnim: &mut AnimatedSprite,
+    g2pfactoryTexture: &Texture2D,
+    transmitterAnim: &mut AnimatedSprite,
+    transmitterTexture: &Texture2D,
 ) {
     // draw lines
     let mut currentX: f32 = startX;
@@ -70,7 +76,22 @@ pub fn drawGrid(
                 );
                 playerAnim.update();
             }
-            TileOccupant::BasicResource => draw_rectangle(pixelX, pixelY, cellSize, cellSize, BLUE),
+            TileOccupant::BasicResource => {
+                let frame = basicResourceAnim.frame();
+
+                draw_texture_ex(
+                    basicResourceTexture,
+                    pixelX,
+                    pixelY,
+                    WHITE,
+                    DrawTextureParams {
+                        source: Some(frame.source_rect),
+                        dest_size: Some(frame.dest_size),
+                        ..Default::default()
+                    },
+                );
+                basicResourceAnim.update();
+            }
             TileOccupant::Input => {
                 let frame = inputAnim.frame();
 
@@ -103,10 +124,38 @@ pub fn drawGrid(
                 );
                 outputAnim.update();
             }
-            TileOccupant::G2PFactory => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GRAY),
+            TileOccupant::G2PFactory => {
+                let frame = g2pfactoryAnim.frame();
+
+                draw_texture_ex(
+                    g2pfactoryTexture,
+                    pixelX,
+                    pixelY,
+                    WHITE,
+                    DrawTextureParams {
+                        source: Some(frame.source_rect),
+                        dest_size: Some(frame.dest_size),
+                        ..Default::default()
+                    },
+                );
+                g2pfactoryAnim.update();
+            }
             TileOccupant::TransmitterNode => {
                 // draw a TransmitterNode
-                draw_rectangle(pixelX, pixelY, cellSize, cellSize, GOLD);
+                let frame = transmitterAnim.frame();
+
+                draw_texture_ex(
+                    transmitterTexture,
+                    pixelX,
+                    pixelY,
+                    WHITE,
+                    DrawTextureParams {
+                        source: Some(frame.source_rect),
+                        dest_size: Some(frame.dest_size),
+                        ..Default::default()
+                    },
+                );
+                transmitterAnim.update();
 
                 // step forward in each direction until exceeds limit/finds a valid node
                 let searchLimit: u32 = 5;

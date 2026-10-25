@@ -44,10 +44,22 @@ async fn main() {
     let playerSpritesheet = load_texture("sprites/player-walk.png")
         .await
         .expect("unable to load output");
+    let basicResourceSpritesheet = load_texture("sprites/basic-resource.png")
+        .await
+        .expect("unable to load output");
+    let g2pfactorySpritesheet = load_texture("sprites/g2p-factory.png")
+        .await
+        .expect("unable to load output");
+    let transmitterSpritesheet = load_texture("sprites/transmitter.png")
+        .await
+        .expect("unable to load output");
 
     inputSpritesheet.set_filter(FilterMode::Nearest);
     outputSpritesheet.set_filter(FilterMode::Nearest);
     playerSpritesheet.set_filter(FilterMode::Nearest);
+    basicResourceSpritesheet.set_filter(FilterMode::Nearest);
+    g2pfactorySpritesheet.set_filter(FilterMode::Nearest);
+    transmitterSpritesheet.set_filter(FilterMode::Nearest);
 
     build_textures_atlas();
 
@@ -72,7 +84,7 @@ async fn main() {
             name: "idle".to_string(),
             row: 0,
             frames: 2,
-            fps: 12,
+            fps: 8,
         }],
         true,
     );
@@ -85,11 +97,50 @@ async fn main() {
             name: "walk".to_string(),
             row: 0,
             frames: 2,
-            fps: 12,
+            fps: 8,
         }],
         true,
     );
     player.set_animation(0);
+
+    let mut basicResource = AnimatedSprite::new(
+        50,
+        50,
+        &[Animation {
+            name: "glint".to_string(),
+            row: 0,
+            frames: 3,
+            fps: 8,
+        }],
+        true,
+    );
+    basicResource.set_animation(0);
+
+    let mut g2pfactory = AnimatedSprite::new(
+        50,
+        50,
+        &[Animation {
+            name: "work".to_string(),
+            row: 0,
+            frames: 3,
+            fps: 8,
+        }],
+        true,
+    );
+    g2pfactory.set_animation(0);
+
+    let mut transmitter = AnimatedSprite::new(
+        50,
+        50,
+        &[Animation {
+            name: "transmit".to_string(),
+            row: 0,
+            frames: 2,
+            fps: 8,
+        }],
+        true,
+    );
+    transmitter.set_animation(0);
 
     // building the map
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
@@ -346,6 +397,12 @@ async fn main() {
                     &outputSpritesheet,
                     &mut player,
                     &playerSpritesheet,
+                    &mut basicResource,
+                    &basicResourceSpritesheet,
+                    &mut g2pfactory,
+                    &g2pfactorySpritesheet,
+                    &mut transmitter,
+                    &transmitterSpritesheet,
                 );
 
                 // check for win condition
