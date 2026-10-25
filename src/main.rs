@@ -3,12 +3,11 @@ mod factories;
 mod gridutils;
 mod types;
 
-use factories::*;
+use ::rand::*;
 use gridutils::*;
+use macroquad::audio::*;
 use macroquad::experimental::animation::*;
 use macroquad::prelude::*;
-use macroquad::ui;
-use macroquad::ui::hash;
 use std::collections::*;
 use types::*;
 
@@ -26,6 +25,24 @@ async fn main() {
 
     let font = load_ttf_font("fonts/font.ttf").await.unwrap();
     set_default_font(font);
+
+    let titleTheme = load_sound("music/title.ogg").await.expect("no");
+    let mainTheme = load_sound("music/main.ogg").await.expect("no");
+    let winTheme = load_sound("music/win.ogg").await.expect("No");
+
+    let tracks = [titleTheme, mainTheme, winTheme];
+
+    // randomly select track
+    let index: usize = random_range(0..=2);
+    let chosenTrack = &tracks[index];
+
+    play_sound(
+        chosenTrack,
+        PlaySoundParams {
+            looped: true,
+            volume: 0.5,
+        },
+    );
 
     let mut levelMap: HashMap<IVec2, TileOccupant> = HashMap::new();
     let mut nodeResourcesMap: HashMap<IVec2, Traveller> = HashMap::new();
