@@ -155,6 +155,10 @@ async fn main() {
     levelMap.insert(IVec2::new(6, 5), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(7, 5), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(8, 5), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(8, 6), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(7, 6), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(6, 6), TileOccupant::BasicResource);
+    levelMap.insert(IVec2::new(5, 6), TileOccupant::BasicResource);
     levelMap.insert(IVec2::new(0, 0), TileOccupant::Input);
     levelMap.insert(IVec2::new(9, 9), TileOccupant::Output);
 
