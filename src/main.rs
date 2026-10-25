@@ -5,6 +5,7 @@ mod types;
 
 use factories::*;
 use gridutils::*;
+use macroquad::experimental::animation::*;
 use macroquad::prelude::*;
 use macroquad::ui;
 use macroquad::ui::hash;
@@ -13,7 +14,9 @@ use types::*;
 
 #[macroquad::main("Little Factory")]
 async fn main() {
-    let font = load_ttf_font("assets/fonts/font.ttf").await.unwrap();
+    set_pc_assets_folder("assets");
+
+    let font = load_ttf_font("fonts/font.ttf").await.unwrap();
     set_default_font(font);
 
     let mut levelMap: HashMap<IVec2, TileOccupant> = HashMap::new();
@@ -30,6 +33,10 @@ async fn main() {
     let startX: f32 = 100.0;
     let startY: f32 = 100.0;
     let cellSize: f32 = 50.0;
+
+    // spritesheets
+    let inputSpritesheet = load_texture("sprites/input.png");
+    let outputSpritesheet = load_texture("sprites/output.png");
 
     // building the map
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
