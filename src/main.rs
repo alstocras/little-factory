@@ -414,14 +414,14 @@ async fn main() {
                 );
 
                 // check for win condition
-                if nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount >= 2000 {
+                if nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount >= 1000 {
                     gameState = GameState::Win;
                 }
 
                 // UI RENDERING
 
                 // show bromine count
-                let basicResLabel = format!("Br: {}", numBasicResource);
+                let basicResLabel = format!("Bromine: {}", numBasicResource);
                 let basicResDimen = measure_text(&basicResLabel, None, 30, 1.0);
                 draw_text(
                     &basicResLabel,
@@ -433,7 +433,7 @@ async fn main() {
 
                 // show progress of plutonium
                 let resourcesInOutput = nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount;
-                let progLabel = format!("Transferred: {} / 2k", resourcesInOutput);
+                let progLabel = format!("Transferred: {} / 1k", resourcesInOutput);
                 let progLabelDimen = measure_text(&progLabel, None, 30, 1.0);
                 draw_text(
                     &progLabel,
@@ -443,11 +443,34 @@ async fn main() {
                     purple,
                 );
 
-                // the build menu
-                if ui::root_ui().button(None, "Transmitter") {
+                // show the factory & transmitter
+                let transmitterLabel = format!("Transmitter");
+                let transmitterLabelDimen = measure_text(&transmitterLabel, None, 30, 1.0);
+                draw_text(
+                    &transmitterLabel,
+                    25.0,
+                    screen_height() - transmitterLabelDimen.height - 30.0,
+                    30.0,
+                    gold,
+                );
+
+                let factoryLabel = format!("Factory");
+                let factoryLabelDimen = measure_text(&factoryLabel, None, 30, 1.0);
+                draw_text(
+                    &factoryLabel,
+                    25.0,
+                    screen_height()
+                        - transmitterLabelDimen.height
+                        - factoryLabelDimen.height
+                        - 50.0,
+                    30.0,
+                    grey,
+                );
+
+                if is_key_down(KeyCode::Key1) {
                     buildingSelected = TileOccupant::TransmitterNode;
                 }
-                if ui::root_ui().button(None, "Ge-Pu Factory") {
+                if is_key_down(KeyCode::Key2) {
                     buildingSelected = TileOccupant::G2PFactory;
                 }
             }
