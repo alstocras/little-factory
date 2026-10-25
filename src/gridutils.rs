@@ -58,7 +58,7 @@ pub fn drawGrid(
                 let searchLimit: u32 = 5;
                 let mut tilesSearched: u32 = 0;
                 let mut tileLookingAt: IVec2 = *pos;
-                let mut locatedTransmitter: IVec2 = *pos;
+                let mut locatedTransmitter: IVec2;
 
                 // north (0, -1)
                 while tilesSearched < searchLimit {
@@ -191,10 +191,7 @@ pub fn raycastAndTransferItems(
         tileLookingAt = ivec2(tileLookingAt.x + direction.x, tileLookingAt.y + direction.y);
         let activeTileHolder = levelMap.get(&tileLookingAt);
         match activeTileHolder {
-            Some(TileOccupant::TransmitterNode)
-            | Some(TileOccupant::Input)
-            | Some(TileOccupant::Output)
-            | Some(TileOccupant::G2PFactory) => {
+            Some(TileOccupant::TransmitterNode) | Some(TileOccupant::Output) => {
                 let mut resourcesPresentDest: u64 = 0;
                 let mut resourcesPresentSource: u64 = 0;
                 let mut resourceTypeDest: Option<TravellerItem> = None;
@@ -210,16 +207,16 @@ pub fn raycastAndTransferItems(
                     resourceTypeSource = RPS.itemType;
                 }
 
-                if resourceTypeDest.is_none() {
-                    resourceTypeDest = resourceTypeSource;
-                }
-
                 // write to the values if it can
-                if resourcesPresentDest < resourcesPresentSource
-                    && resourceTypeDest == resourceTypeSource
-                {
+                if resourcesPresentDest < resourcesPresentSource {
                     resourcesPresentSource -= 1;
                     resourcesPresentDest += 1;
+
+                    if resourceTypeSource != resourceTypeDest
+                        && levelMap.get(&tileLookingAt) == Some(&TileOccupant::Output)
+                    {
+                        resourcesPresentDest = 0;
+                    }
 
                     if let Some(RPD) = nodeResourcesMap.get_mut(&tileLookingAt) {
                         RPD.amount = resourcesPresentDest;
@@ -235,7 +232,11 @@ pub fn raycastAndTransferItems(
                     );
                 }
             }
-            Some(TileOccupant::Player) | Some(TileOccupant::BasicResource) | None => {}
+            Some(TileOccupant::Player)
+            | Some(TileOccupant::BasicResource)
+            | Some(TileOccupant::Input)
+            | Some(TileOccupant::G2PFactory)
+            | None => {}
         };
         tilesSearched += 1;
     }

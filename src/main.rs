@@ -138,10 +138,8 @@ async fn main() {
         // actually run the  transfer simulation
         for (cellWithBuilding, buildingType) in levelMap.iter() {
             match buildingType {
-                TileOccupant::TransmitterNode | TileOccupant::Input | TileOccupant::Output => {
-                    let mut tilesSearched: u32 = 0;
+                TileOccupant::TransmitterNode | TileOccupant::Input => {
                     let searchLimit: u32 = 5;
-                    let mut tileLookingAt: IVec2 = *cellWithBuilding;
 
                     // south (0, 1)
                     raycastAndTransferItems(
@@ -181,6 +179,7 @@ async fn main() {
                 }
                 TileOccupant::Player | TileOccupant::BasicResource => {}
                 TileOccupant::G2PFactory => {}
+                TileOccupant::Output => {}
             }
         }
 

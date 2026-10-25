@@ -1,5 +1,5 @@
 // for anything that occpias a tile
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum TileOccupant {
     Player,
     BasicResource,
