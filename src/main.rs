@@ -23,6 +23,7 @@ async fn main() {
     let mut numBasicResource: u32 = 0;
 
     let mut gameState: GameState = GameState::Game;
+    let mut buildingSelected: TileOccupant = TileOccupant::TransmitterNode;
 
     let rows: u32 = 10;
     let cols: u32 = 10;
@@ -111,19 +112,19 @@ async fn main() {
                     }
                 }
 
-                // click to place (only G2PFactory for now)
+                // click to place selected building
                 if is_mouse_button_pressed(MouseButton::Left) {
-                    if numBasicResource >= 2 {
-                        let (mouseX, mouseY) = mouse_position();
+                    let (mouseX, mouseY) = mouse_position();
 
-                        let mouseCellX: i32 = ((mouseX - startX) / cellSize).floor() as i32;
-                        let mouseCellY: i32 = ((mouseY - startY) / cellSize).floor() as i32;
+                    let mouseCellX: i32 = ((mouseX - startX) / cellSize).floor() as i32;
+                    let mouseCellY: i32 = ((mouseY - startY) / cellSize).floor() as i32;
 
-                        let mouseCellPos = IVec2::new(mouseCellX, mouseCellY);
+                    let mouseCellPos = IVec2::new(mouseCellX, mouseCellY);
 
-                        let dist = (playerPos.x - mouseCellPos.x).abs()
-                            + (playerPos.y - mouseCellPos.y).abs();
+                    let dist =
+                        (playerPos.x - mouseCellPos.x).abs() + (playerPos.y - mouseCellPos.y).abs();
 
+                    if buildingSelected == TileOccupant::G2PFactory && numBasicResource >= 2 {
                         if !levelMap.contains_key(&mouseCellPos) && dist <= 3 {
                             levelMap.insert(mouseCellPos, TileOccupant::G2PFactory);
                             nodeResourcesMap.insert(
@@ -137,24 +138,9 @@ async fn main() {
                         } else {
                             println!("occupied/too far");
                         }
-                    } else {
-                        println!("not enough resources");
-                    }
-                }
-
-                // middle click for transmitter
-                if is_mouse_button_pressed(MouseButton::Middle) {
-                    if numBasicResource >= 1 {
-                        let (mouseX, mouseY) = mouse_position();
-
-                        let mouseCellX: i32 = ((mouseX - startX) / cellSize).floor() as i32;
-                        let mouseCellY: i32 = ((mouseY - startY) / cellSize).floor() as i32;
-
-                        let mouseCellPos = IVec2::new(mouseCellX, mouseCellY);
-
-                        let dist = (playerPos.x - mouseCellPos.x).abs()
-                            + (playerPos.y - mouseCellPos.y).abs();
-
+                    } else if buildingSelected == TileOccupant::TransmitterNode
+                        && numBasicResource >= 1
+                    {
                         if !levelMap.contains_key(&mouseCellPos) && dist <= 3 {
                             levelMap.insert(mouseCellPos, TileOccupant::TransmitterNode);
                             nodeResourcesMap.insert(
@@ -169,7 +155,7 @@ async fn main() {
                             println!("occupied/too far");
                         }
                     } else {
-                        println!("not enough");
+                        println!("not enough resources/nothing selected");
                     }
                 }
 
@@ -265,7 +251,7 @@ async fn main() {
                 drawGrid(cellSize, GRAY, startX, startY, rows, cols, &levelMap);
 
                 // check for win condition
-                if nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount >= 500 {
+                if nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount >= 2000 {
                     gameState = GameState::Win;
                 }
 
@@ -284,7 +270,7 @@ async fn main() {
 
                 // show progress of plutonium
                 let resourcesInOutput = nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount;
-                let progLabel = format!("Transferred: {} / 500", resourcesInOutput);
+                let progLabel = format!("Transferred: {} / 2k", resourcesInOutput);
                 let progLabelDimen = measure_text(&progLabel, None, 30, 1.0);
                 draw_text(
                     &progLabel,
@@ -295,6 +281,12 @@ async fn main() {
                 );
 
                 // the build menu
+                if ui::root_ui().button(None, "Transmitter") {
+                    buildingSelected = TileOccupant::TransmitterNode;
+                }
+                if ui::root_ui().button(None, "Ge-Pu Factory") {
+                    buildingSelected = TileOccupant::G2PFactory;
+                }
             }
         }
 
