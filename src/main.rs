@@ -55,7 +55,16 @@ async fn main() {
         clear_background(BLACK);
 
         match gameState {
-            GameState::Win => println!("you win!"),
+            GameState::Win => {
+                let winDimen = measure_text("successful transfer!", None, 40, 1.0);
+                draw_text(
+                    "succesful transfer!",
+                    screen_width() / 2.0 - winDimen.width / 2.0,
+                    screen_height() / 2.0,
+                    40.0,
+                    GOLD,
+                );
+            }
             GameState::Game => {
                 // handle player input
                 if is_key_pressed(KeyCode::Y) || is_key_pressed(KeyCode::W) {
@@ -267,10 +276,10 @@ async fn main() {
                     screen_width() - basicResDimen.width - 75.0,
                     basicResDimen.height + 50.0,
                     40.0,
-                    WHITE,
+                    BLUE,
                 );
 
-                // show progress
+                // show progress of plutonium
                 let resourcesInOutput = nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount;
                 let progLabel = format!("Plutonium in output: {} / 500", resourcesInOutput);
                 let progLabelDimen = measure_text(&progLabel, None, 40, 1.0);
@@ -279,7 +288,7 @@ async fn main() {
                     screen_width() - progLabelDimen.width - 75.0,
                     basicResDimen.height + progLabelDimen.height + 50.0,
                     40.0,
-                    WHITE,
+                    PURPLE,
                 );
             }
         }
