@@ -27,4 +27,5 @@ pub struct Traveller {
 pub enum GameState {
     Game,
     Win,
+    MainMenu,
 }
