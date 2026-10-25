@@ -13,6 +13,9 @@ use types::*;
 
 #[macroquad::main("Little Factory")]
 async fn main() {
+    let font = load_ttf_font("assets/fonts/font.ttf").await.unwrap();
+    set_default_font(font);
+
     let mut levelMap: HashMap<IVec2, TileOccupant> = HashMap::new();
     let mut nodeResourcesMap: HashMap<IVec2, Traveller> = HashMap::new();
     let mut playerPos: IVec2 = IVec2::new(1, 1);
@@ -269,27 +272,29 @@ async fn main() {
                 // UI RENDERING
 
                 // show bromine count
-                let basicResLabel = format!("Bromine: {}", numBasicResource);
-                let basicResDimen = measure_text(&basicResLabel, None, 40, 1.0);
+                let basicResLabel = format!("Br: {}", numBasicResource);
+                let basicResDimen = measure_text(&basicResLabel, None, 30, 1.0);
                 draw_text(
                     &basicResLabel,
-                    screen_width() - basicResDimen.width - 75.0,
-                    basicResDimen.height + 50.0,
-                    40.0,
+                    screen_width() - basicResDimen.width - 25.0,
+                    screen_height() - basicResDimen.height - 25.0,
+                    30.0,
                     BLUE,
                 );
 
                 // show progress of plutonium
                 let resourcesInOutput = nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount;
-                let progLabel = format!("Plutonium in output: {} / 500", resourcesInOutput);
-                let progLabelDimen = measure_text(&progLabel, None, 40, 1.0);
+                let progLabel = format!("Transferred: {} / 500", resourcesInOutput);
+                let progLabelDimen = measure_text(&progLabel, None, 30, 1.0);
                 draw_text(
                     &progLabel,
-                    screen_width() - progLabelDimen.width - 75.0,
-                    basicResDimen.height + progLabelDimen.height + 50.0,
-                    40.0,
+                    screen_width() - progLabelDimen.width - 25.0,
+                    screen_height() - basicResDimen.height - progLabelDimen.height - 30.0,
+                    30.0,
                     PURPLE,
                 );
+
+                // the build menu
             }
         }
 
