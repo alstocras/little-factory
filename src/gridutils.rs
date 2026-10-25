@@ -200,6 +200,15 @@ pub fn raycastAndTransferItems(
                 let mut resourceTypeDest: Option<TravellerItem> = None;
                 let mut resourceTypeSource: Option<TravellerItem> = None;
 
+                if activeTileHolder == Some(&TileOccupant::G2PFactory) {
+                    convertItemType(
+                        nodeResourcesMap,
+                        TravellerItem::GreenItem,
+                        TravellerItem::PurpleItem,
+                        tileLookingAt,
+                    );
+                }
+
                 // read the dest and source resources
                 if let Some(RPD) = nodeResourcesMap.get(&tileLookingAt) {
                     resourcesPresentDest = RPD.amount;
@@ -208,14 +217,6 @@ pub fn raycastAndTransferItems(
                 if let Some(RPS) = nodeResourcesMap.get(cellWithBuilding) {
                     resourcesPresentSource = RPS.amount;
                     resourceTypeSource = RPS.itemType;
-                }
-                if activeTileHolder == Some(&TileOccupant::G2PFactory) {
-                    convertItemType(
-                        nodeResourcesMap.clone(),
-                        TravellerItem::GreenItem,
-                        TravellerItem::PurpleItem,
-                        tileLookingAt,
-                    );
                 }
 
                 // write to the values if it can
