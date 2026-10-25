@@ -35,8 +35,15 @@ async fn main() {
     let cellSize: f32 = 50.0;
 
     // spritesheets
-    let inputSpritesheet = load_texture("sprites/input.png");
-    let outputSpritesheet = load_texture("sprites/output.png");
+    let inputSpritesheet = load_texture("sprites/input.png")
+        .await
+        .expect("unable to load input");
+    let outputSpritesheet = load_texture("sprites/output.png")
+        .await
+        .expect("unable to load output");
+
+    inputSpritesheet.set_filter(FilterMode::Nearest);
+    outputSpritesheet.set_filter(FilterMode::Nearest);
 
     // building the map
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
