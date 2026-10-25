@@ -23,3 +23,8 @@ pub struct Traveller {
     pub itemType: Option<TravellerItem>,
     pub amount: u64,
 }
+
+pub enum GameState {
+    Game,
+    Win,
+}
