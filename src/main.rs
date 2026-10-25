@@ -5,6 +5,7 @@ mod types;
 
 use factories::*;
 use gridutils::*;
+use macroquad::experimental::animation::*;
 use macroquad::prelude::*;
 use macroquad::ui;
 use macroquad::ui::hash;
@@ -13,7 +14,17 @@ use types::*;
 
 #[macroquad::main("Little Factory")]
 async fn main() {
-    let font = load_ttf_font("assets/fonts/font.ttf").await.unwrap();
+    // palette
+    let blue = Color::from_hex(0x4f61a7);
+    let gold = Color::from_hex(0xdbaf91);
+    let white = Color::from_hex(0xd9d4d8);
+    let purple = Color::from_hex(0xb991db);
+    let black = Color::from_hex(0x2d272f);
+    let grey = Color::from_hex(0x524d4a);
+
+    set_pc_assets_folder("assets");
+
+    let font = load_ttf_font("fonts/font.ttf").await.unwrap();
     set_default_font(font);
 
     let mut levelMap: HashMap<IVec2, TileOccupant> = HashMap::new();
@@ -30,6 +41,114 @@ async fn main() {
     let startX: f32 = 100.0;
     let startY: f32 = 100.0;
     let cellSize: f32 = 50.0;
+
+    // spritesheets
+    let inputSpritesheet = load_texture("sprites/input.png")
+        .await
+        .expect("unable to load input");
+    let outputSpritesheet = load_texture("sprites/output.png")
+        .await
+        .expect("unable to load output");
+    let playerSpritesheet = load_texture("sprites/player-walk.png")
+        .await
+        .expect("unable to load output");
+    let basicResourceSpritesheet = load_texture("sprites/basic-resource.png")
+        .await
+        .expect("unable to load output");
+    let g2pfactorySpritesheet = load_texture("sprites/g2p-factory.png")
+        .await
+        .expect("unable to load output");
+    let transmitterSpritesheet = load_texture("sprites/transmitter.png")
+        .await
+        .expect("unable to load output");
+
+    inputSpritesheet.set_filter(FilterMode::Nearest);
+    outputSpritesheet.set_filter(FilterMode::Nearest);
+    playerSpritesheet.set_filter(FilterMode::Nearest);
+    basicResourceSpritesheet.set_filter(FilterMode::Nearest);
+    g2pfactorySpritesheet.set_filter(FilterMode::Nearest);
+    transmitterSpritesheet.set_filter(FilterMode::Nearest);
+
+    build_textures_atlas();
+
+    // animating sprites
+    let mut input = AnimatedSprite::new(
+        50,
+        50,
+        &[Animation {
+            name: "idle".to_string(),
+            row: 0,
+            frames: 2,
+            fps: 12,
+        }],
+        true,
+    );
+    input.set_animation(0);
+
+    let mut output = AnimatedSprite::new(
+        50,
+        50,
+        &[Animation {
+            name: "idle".to_string(),
+            row: 0,
+            frames: 2,
+            fps: 8,
+        }],
+        true,
+    );
+    output.set_animation(0);
+
+    let mut player = AnimatedSprite::new(
+        50,
+        50,
+        &[Animation {
+            name: "walk".to_string(),
+            row: 0,
+            frames: 2,
+            fps: 8,
+        }],
+        true,
+    );
+    player.set_animation(0);
+
+    let mut basicResource = AnimatedSprite::new(
+        50,
+        50,
+        &[Animation {
+            name: "glint".to_string(),
+            row: 0,
+            frames: 3,
+            fps: 8,
+        }],
+        true,
+    );
+    basicResource.set_animation(0);
+
+    let mut g2pfactory = AnimatedSprite::new(
+        50,
+        50,
+        &[Animation {
+            name: "work".to_string(),
+            row: 0,
+            frames: 3,
+            fps: 8,
+        }],
+        true,
+    );
+    g2pfactory.set_animation(0);
+
+    let mut transmitter = AnimatedSprite::new(
+        50,
+        50,
+        &[Animation {
+            name: "transmit".to_string(),
+            row: 0,
+            frames: 2,
+            fps: 8,
+        }],
+        true,
+    );
+    transmitter.set_animation(0);
 
     // building the map
     levelMap.insert(IVec2::new(5, 5), TileOccupant::BasicResource);
@@ -56,7 +175,7 @@ async fn main() {
     );
 
     loop {
-        clear_background(BLACK);
+        clear_background(black);
 
         match gameState {
             GameState::MainMenu => {
@@ -73,14 +192,14 @@ async fn main() {
                     screen_width() / 2.0 - titleDimen.width / 2.0,
                     screen_height() / 2.0,
                     50.0,
-                    GOLD,
+                    gold,
                 );
                 draw_text(
                     "space to play, esc to quit",
                     screen_width() / 2.0 - helperDimen.width / 2.0,
                     screen_height() / 2.0 + titleDimen.height + 25.0,
                     30.0,
-                    WHITE,
+                    white,
                 );
             }
             GameState::Win => {
@@ -90,7 +209,7 @@ async fn main() {
                     screen_width() / 2.0 - winDimen.width / 2.0,
                     screen_height() / 2.0,
                     40.0,
-                    GOLD,
+                    gold,
                 );
             }
             GameState::Game => {
@@ -272,7 +391,27 @@ async fn main() {
                 }
 
                 levelMap.insert(playerPos, TileOccupant::Player);
-                drawGrid(cellSize, GRAY, startX, startY, rows, cols, &levelMap);
+                drawGrid(
+                    cellSize,
+                    grey,
+                    startX,
+                    startY,
+                    rows,
+                    cols,
+                    &levelMap,
+                    &mut input,
+                    &inputSpritesheet,
+                    &mut output,
+                    &outputSpritesheet,
+                    &mut player,
+                    &playerSpritesheet,
+                    &mut basicResource,
+                    &basicResourceSpritesheet,
+                    &mut g2pfactory,
+                    &g2pfactorySpritesheet,
+                    &mut transmitter,
+                    &transmitterSpritesheet,
+                );
 
                 // check for win condition
                 if nodeResourcesMap.get(&IVec2::new(9, 9)).unwrap().amount >= 2000 {
@@ -289,7 +428,7 @@ async fn main() {
                     screen_width() - basicResDimen.width - 25.0,
                     screen_height() - basicResDimen.height - 25.0,
                     30.0,
-                    BLUE,
+                    blue,
                 );
 
                 // show progress of plutonium
@@ -301,7 +440,7 @@ async fn main() {
                     screen_width() - progLabelDimen.width - 25.0,
                     screen_height() - basicResDimen.height - progLabelDimen.height - 30.0,
                     30.0,
-                    PURPLE,
+                    purple,
                 );
 
                 // the build menu

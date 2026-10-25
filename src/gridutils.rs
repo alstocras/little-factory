@@ -1,6 +1,7 @@
 // gridutils.rs
 use crate::factories::*;
 use crate::types::*;
+use macroquad::experimental::animation::*;
 use macroquad::prelude::*;
 use std::collections::*;
 
@@ -12,7 +13,25 @@ pub fn drawGrid(
     rows: u32,
     cols: u32,
     levelMap: &HashMap<IVec2, TileOccupant>,
+    inputAnim: &mut AnimatedSprite,
+    inputTexture: &Texture2D,
+    outputAnim: &mut AnimatedSprite,
+    outputTexture: &Texture2D,
+    playerAnim: &mut AnimatedSprite,
+    playerTexture: &Texture2D,
+    basicResourceAnim: &mut AnimatedSprite,
+    basicResourceTexture: &Texture2D,
+    g2pfactoryAnim: &mut AnimatedSprite,
+    g2pfactoryTexture: &Texture2D,
+    transmitterAnim: &mut AnimatedSprite,
+    transmitterTexture: &Texture2D,
 ) {
+    // palette
+    let blue = Color::from_hex(0x4f61a7);
+    let gold = Color::from_hex(0xdbaf91);
+    let white = Color::from_hex(0xd9d4d8);
+    let grey = Color::from_hex(0x524d4a);
+
     // draw lines
     let mut currentX: f32 = startX;
     let mut currentY: f32 = startY;
@@ -47,14 +66,102 @@ pub fn drawGrid(
         let pixelY = (pos.y * cellSize as i32) as f32 + startY;
 
         match occupant {
-            TileOccupant::Player => draw_rectangle(pixelX, pixelY, cellSize, cellSize, RED),
-            TileOccupant::BasicResource => draw_rectangle(pixelX, pixelY, cellSize, cellSize, BLUE),
-            TileOccupant::Input => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GREEN),
-            TileOccupant::Output => draw_rectangle(pixelX, pixelY, cellSize, cellSize, PURPLE),
-            TileOccupant::G2PFactory => draw_rectangle(pixelX, pixelY, cellSize, cellSize, GRAY),
+            TileOccupant::Player => {
+                let frame = playerAnim.frame();
+
+                draw_texture_ex(
+                    playerTexture,
+                    pixelX,
+                    pixelY,
+                    white,
+                    DrawTextureParams {
+                        source: Some(frame.source_rect),
+                        dest_size: Some(frame.dest_size),
+                        ..Default::default()
+                    },
+                );
+                playerAnim.update();
+            }
+            TileOccupant::BasicResource => {
+                let frame = basicResourceAnim.frame();
+
+                draw_texture_ex(
+                    basicResourceTexture,
+                    pixelX,
+                    pixelY,
+                    white,
+                    DrawTextureParams {
+                        source: Some(frame.source_rect),
+                        dest_size: Some(frame.dest_size),
+                        ..Default::default()
+                    },
+                );
+                basicResourceAnim.update();
+            }
+            TileOccupant::Input => {
+                let frame = inputAnim.frame();
+
+                draw_texture_ex(
+                    inputTexture,
+                    pixelX,
+                    pixelY,
+                    white,
+                    DrawTextureParams {
+                        source: Some(frame.source_rect),
+                        dest_size: Some(frame.dest_size),
+                        ..Default::default()
+                    },
+                );
+                inputAnim.update();
+            }
+            TileOccupant::Output => {
+                let frame = outputAnim.frame();
+
+                draw_texture_ex(
+                    outputTexture,
+                    pixelX,
+                    pixelY,
+                    white,
+                    DrawTextureParams {
+                        source: Some(frame.source_rect),
+                        dest_size: Some(frame.dest_size),
+                        ..Default::default()
+                    },
+                );
+                outputAnim.update();
+            }
+            TileOccupant::G2PFactory => {
+                let frame = g2pfactoryAnim.frame();
+
+                draw_texture_ex(
+                    g2pfactoryTexture,
+                    pixelX,
+                    pixelY,
+                    white,
+                    DrawTextureParams {
+                        source: Some(frame.source_rect),
+                        dest_size: Some(frame.dest_size),
+                        ..Default::default()
+                    },
+                );
+                g2pfactoryAnim.update();
+            }
             TileOccupant::TransmitterNode => {
                 // draw a TransmitterNode
-                draw_rectangle(pixelX, pixelY, cellSize, cellSize, GOLD);
+                let frame = transmitterAnim.frame();
+
+                draw_texture_ex(
+                    transmitterTexture,
+                    pixelX,
+                    pixelY,
+                    white,
+                    DrawTextureParams {
+                        source: Some(frame.source_rect),
+                        dest_size: Some(frame.dest_size),
+                        ..Default::default()
+                    },
+                );
+                transmitterAnim.update();
 
                 // step forward in each direction until exceeds limit/finds a valid node
                 let searchLimit: u32 = 5;
@@ -79,7 +186,7 @@ pub fn drawGrid(
                                 locatedTransmitter.x as f32 * cellSize + startX + cellSize / 2.0,
                                 locatedTransmitter.y as f32 * cellSize + startY + cellSize / 2.0,
                                 10.0,
-                                GOLD,
+                                gold,
                             );
                             break;
                         }
@@ -107,7 +214,7 @@ pub fn drawGrid(
                                 locatedTransmitter.x as f32 * cellSize + startX + cellSize / 2.0,
                                 locatedTransmitter.y as f32 * cellSize + startY + cellSize / 2.0,
                                 10.0,
-                                GOLD,
+                                gold,
                             );
                             break;
                         }
@@ -135,7 +242,7 @@ pub fn drawGrid(
                                 locatedTransmitter.x as f32 * cellSize + startX + cellSize / 2.0,
                                 locatedTransmitter.y as f32 * cellSize + startY + cellSize / 2.0,
                                 10.0,
-                                GOLD,
+                                gold,
                             );
                             break;
                         }
@@ -163,7 +270,7 @@ pub fn drawGrid(
                                 locatedTransmitter.x as f32 * cellSize + startX + cellSize / 2.0,
                                 locatedTransmitter.y as f32 * cellSize + startY + cellSize / 2.0,
                                 10.0,
-                                GOLD,
+                                gold,
                             );
                             break;
                         }
