@@ -246,6 +246,11 @@ pub fn raycastAndTransferItems(
                     if let Some(RPS) = nodeResourcesMap.get_mut(cellWithBuilding) {
                         RPS.amount = resourcesPresentSource;
                         RPS.itemType = resourceTypeSource;
+                        if RPS.amount == 0
+                            && levelMap.get(cellWithBuilding) != Some(&TileOccupant::Output)
+                        {
+                            RPS.itemType = None;
+                        }
                     }
                     println!(
                         "source: {}, dest: {}",
