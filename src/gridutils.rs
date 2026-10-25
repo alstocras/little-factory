@@ -30,6 +30,7 @@ pub fn drawGrid(
     let blue = Color::from_hex(0x4f61a7);
     let gold = Color::from_hex(0xdbaf91);
     let white = Color::from_hex(0xd9d4d8);
+    let grey = Color::from_hex(0x524d4a);
 
     // draw lines
     let mut currentX: f32 = startX;

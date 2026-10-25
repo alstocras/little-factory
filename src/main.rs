@@ -20,6 +20,7 @@ async fn main() {
     let white = Color::from_hex(0xd9d4d8);
     let purple = Color::from_hex(0xb991db);
     let black = Color::from_hex(0x2d272f);
+    let grey = Color::from_hex(0x524d4a);
 
     set_pc_assets_folder("assets");
 
@@ -392,7 +393,7 @@ async fn main() {
                 levelMap.insert(playerPos, TileOccupant::Player);
                 drawGrid(
                     cellSize,
-                    GRAY,
+                    grey,
                     startX,
                     startY,
                     rows,
